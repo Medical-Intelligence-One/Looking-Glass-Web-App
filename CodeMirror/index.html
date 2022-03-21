@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assessment and Plan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <div class="code-mirror-app">
+      <div class="code-mirror-wrapper">
+        <div id="editor-container" class="editor-container">
+          <h3>Assessment and Plan</h3>
+          <div class="editor" id="editor"></div>
+        </div>
+
+        <div class="suggestions-container">
+          <div id="suggestions" class="suggestions">
+            <div id="preloader" class="preloader" style="display: none">
+              <img src="assets/preloader.gif" />
+            </div>
+
+            <div id="suggestions-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="scripts.ts"></script>
+  </body>
+</html>
