@@ -527,6 +527,7 @@ var _autocomplete = require("@codemirror/autocomplete");
 var _state = require("@codemirror/state");
 var _tooltip = require("@codemirror/tooltip");
 var _language = require("@codemirror/language");
+console.log("compiling test 4");
 const axios = require("axios");
 const headers = {
     "Access-Control-Allow-Origin": "*"

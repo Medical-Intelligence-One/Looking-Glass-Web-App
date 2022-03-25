@@ -308,14 +308,14 @@
 90/home/tim/Documents/Looking_Glass/CodeMirror/.cache/bc/4f50e839353b9d6a8ae488b12ece82.json1646113032000000000 0
 54/home/tim/Documents/Looking_Glass/CodeMirror/.cache/bc1646113032000000000 1
 51/home/tim/Documents/Looking_Glass/CodeMirror/.cache1646092284000000000 1
-55/home/tim/Documents/Looking_Glass/CodeMirror/styles.css1646862320000000000 0
+55/home/tim/Documents/Looking_Glass/CodeMirror/styles.css1647981302898885006 0
 51/home/tim/Documents/Looking_Glass/CodeMirror/assets1646348348000000000 1
-55/home/tim/Documents/Looking_Glass/CodeMirror/index.html1647894468732708525 0
-67/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.0d972a35.js1647894077311670527 0
-68/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.1303bb05.css1647894077095667693 0
-71/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.0d972a35.js.map1647894077315670579 0
-49/home/tim/Documents/Looking_Glass/CodeMirror/dist1647894468824709691 1
-55/home/tim/Documents/Looking_Glass/CodeMirror/scripts.ts1647894289354420926 0
+55/home/tim/Documents/Looking_Glass/CodeMirror/index.html1647895118540100612 0
+67/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.0d972a35.js1647975071035017892 0
+68/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.1303bb05.css1647981205181821600 0
+71/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.0d972a35.js.map1647975071039017937 0
+49/home/tim/Documents/Looking_Glass/CodeMirror/dist1647981205181821600 1
+55/home/tim/Documents/Looking_Glass/CodeMirror/scripts.ts1647899544372657672 0
 70/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/coa/index.js499198500000000000 0
 71/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/coa/README.md499198500000000000 0
 70/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/coa/coa.d.ts499198500000000000 0
@@ -11628,7 +11628,7 @@
 104/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/caniuse-lite/data/features/css-touch-action.js499198500000000000 0
 80/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/static-module/test/log1646092162000000000 1
 121/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-cssnano/node_modules/stylehacks/src/plugin.js1647893836116449675 0
-72/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.1303bb05.css.map1647894077095667693 0
+72/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.1303bb05.css.map1647981205181821600 0
 120/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/package-manager/node_modules/@parcel/utils/src/blob.js1647893835824445696 0
 120/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/packager-svg/node_modules/posthtml/types/posthtml.d.ts1647893835880446459 0
 130/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-cssnano/node_modules/svgo/plugins/removeXMLProcInst.js1647893836336452672 0
@@ -13416,7 +13416,7 @@
 76/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/parcel-bundler/bin1646092160000000000 1
 118/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-htmlnano/node_modules/cssnano/package.json1647893835764444879 0
 123/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-cssnano/node_modules/postcss/lib/container.d.ts1647893836248451472 0
-60/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.html1647894468820709641 0
+60/home/tim/Documents/Looking_Glass/CodeMirror/dist/index.html1647899014730361097 0
 117/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/transformer-css/node_modules/postcss/lib/at-rule.js1647893835712444170 0
 128/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-terser/node_modules/@parcel/utils/src/relativeUrl.js1647893836404453599 0
 141/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-htmlnano/node_modules/postcss-normalize-repeat-style/package.json1647893835816445587 0
@@ -18302,7 +18302,7 @@
 132/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/postcss-modules-local-by-default/node_modules/postcss/lib/map-generator.js499198500000000000 0
 105/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@babel/plugin-syntax-class-properties/README.md456825000000000000 0
 114/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/htmlparser2/node_modules/domutils/lib/stringify.d.ts.map499198500000000000 0
-44/home/tim/Documents/Looking_Glass/CodeMirror1647894077043667010 1
+44/home/tim/Documents/Looking_Glass/CodeMirror1647899225676893780 1
 105/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/htmlparser2/node_modules/domutils/lib/legacy.js499198500000000000 0
 99/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/source-map-js/lib/source-map-generator.js1647893836020448366 0
 114/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/htmlparser2/node_modules/domutils/lib/traversal.d.ts.map499198500000000000 0
@@ -23254,7 +23254,7 @@
 142/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/node-resolver-core/node_modules/@parcel/utils/test/input/sourcemap/inline.js1647893836356452944 0
 135/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/optimizer-htmlnano/node_modules/svgo/plugins/removeEmptyContainers.js1647893836312452345 0
 84/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/lodash/fp/dropLastWhile.js499198500000000000 0
-72/home/tim/Documents/Looking_Glass/CodeMirror/dist/preloader.d5b95a99.gif1647894077051667116 0
+72/home/tim/Documents/Looking_Glass/CodeMirror/dist/preloader.d5b95a99.gif1647899014726361049 0
 106/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/@parcel/packager-css/node_modules/@parcel/logger1647893835848446023 1
 84/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/hash.js/lib/hash/ripemd.js499198500000000000 0
 91/home/tim/Documents/Looking_Glass/CodeMirror/node_modules/es-abstract/2021/UnicodeEscape.js499198500000000000 0

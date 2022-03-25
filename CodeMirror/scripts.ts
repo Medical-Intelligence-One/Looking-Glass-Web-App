@@ -8,6 +8,8 @@ import { StateField, EditorSelection } from "@codemirror/state";
 import { Tooltip, showTooltip } from "@codemirror/tooltip";
 import { indentUnit } from "@codemirror/language";
 
+console.log("compiling test 4");
+
 const axios = require("axios");
 const headers = {
   "Access-Control-Allow-Origin": "*",
