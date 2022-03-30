@@ -511,6 +511,7 @@ function bindOrderSuggestions(){
 			if(currentRowText.length==0 || currentRowText.trim().length==0){
 				content += '\t'
 				content += this.getAttribute('data-name')
+				content += '\n'
 				view.dispatch({
 			  		changes: {from: currentLineFrom, to:currentLineTo, insert: content}
 				})
