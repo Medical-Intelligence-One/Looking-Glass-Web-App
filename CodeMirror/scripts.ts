@@ -1,24 +1,26 @@
 // All necessary imports
 
 import { basicSetup, EditorState, EditorView} from '@codemirror/basic-setup';
-import {keymap, lineWrapping} from "@codemirror/view"
+import {keymap} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {autocompletion, CompletionContext} from "@codemirror/autocomplete"
 import {StateField, EditorSelection} from "@codemirror/state"
 import {Tooltip, showTooltip} from "@codemirror/tooltip"
 import {indentUnit} from '@codemirror/language'
 
-const axios = require('axios')
+import axios from 'axios';
 const headers = { 
 	'Access-Control-Allow-Origin': '*'
 }
 
 // Initialization
 
+var dataJson = []
 var isLineChanged = false;
 var isLineChangeNum = 1;
 var check_order_for_order = false
 let parent_problem
+let orderOnClick=false
 let current_state: EditorState
 let current_line = 1
 var currentPosition = 0
@@ -51,6 +53,9 @@ let myTheme = EditorView.theme({
   ".cm-gutters": {
     display: "none"
   },
+  ".cm-tooltip.cm-tooltip-cursor": {
+    display: "none"
+  },
   ".cm-scroller": {
     minHeight: "600px"
   },
@@ -66,6 +71,67 @@ let myTheme = EditorView.theme({
   }
 }, {dark: false})
 
+
+// get patient id and mi1 id from url 
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+let PatientId= urlParams.get('Patientid')
+let MI1_Client_ID= urlParams.get('MI1ClientID')
+
+
+// generate id 
+// let MI1_Client_ID = 123456789
+// let PatientId = "eq081-VQEgP8drUUqCWzHfw3"
+const fhirBody = {
+		"PatientId": PatientId, 
+		"MI1ClientID": MI1_Client_ID
+}
+
+// get current time in epoch format
+const secondsSinceEpoch = Math.round(Date.now() / 1000)
+
+// get current data in dd/mm/yy format
+// let dateObject = new Date()
+// let currentDate = dateObject.getDate()+"/"+(dateObject.getMonth()+1)+"/"+dateObject.getFullYear()
+
+dataJson.push({
+	"PatientId": PatientId,
+	"Order-Date": secondsSinceEpoch,
+	"Problems":[]
+})
+
+// local fhir api call to get patients data 
+axios.post("http://127.0.0.1:5000/PatientData", fhirBody)
+	.then((response)=>{
+		let dob = response.data.DOB
+		let mrn = response.data.MRN
+		let name = response.data.Name
+		let fhirHTMl =  document.getElementById("fhir")
+		var fhirHTMl_div =''
+		fhirHTMl_div+= '<div class="fhir-header"><h4>'
+		fhirHTMl_div+= 'Patient Name : '+name+'</h4>'
+		fhirHTMl_div+= '<h4> Medical Record Number (MRN): '+mrn+'</h4>'
+		fhirHTMl_div+= '<h4> Date Of Birth : '+dob+'</h4>'
+		fhirHTMl.innerHTML = fhirHTMl_div
+	})
+
+const fhirConditionsBody = {
+		"patientId": PatientId, 
+		"category": "problem-list-item",
+		"clinical_status": "active",
+		"MI1ClientID": MI1_Client_ID,
+}
+// local fhir api call to get patients condition
+axios.post("http://127.0.0.1:5000/PatientConditions",fhirConditionsBody)
+	.then((response)=>{
+		console.log(response.data)
+		// console.log(response.data)
+		// for(var i = 0; i < response.data.Conditions.length; i++){
+			// if(response.data.length>0) alert("Code: "+response.data[0].Code+"\n"+"Text: "+response.data[0].Text)
+			// else alert("No Condition data")
+			alert(JSON.stringify(response.data))
+		// }
+	})
 
 // Completion list function
 // This function determines when should the autocomplete process begin
@@ -141,6 +207,18 @@ async function fetchAutoComplete(startsWith){
 					info: info,
 					label: label,
 					apply: ()=>{
+						let test = dataJson[0].Problems.filter(item=>{
+							if(item.ProblemText==label){
+								return item
+							}
+						})
+						if(test.length==0){
+							dataJson[0].Problems.push({
+								"ProblemText": label,
+								"ProblemCUI": info,
+								"Orders":[],
+							})
+						}
 						arrCUIs.push({
 							type: 'problem',
 							cui: info,
@@ -149,9 +227,11 @@ async function fetchAutoComplete(startsWith){
 						view.dispatch({
 							changes: {from: currentLineFrom, to: currentLineTo, insert: label}
 						})
+						let setCursor = EditorSelection.cursor(currentPosition)
 						view.dispatch(
 			        view.state.update({
-			            selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+			            // selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+						selection: setCursor
 			        })
 			      )	
 					}
@@ -190,6 +270,14 @@ async function fetchAutoCompleteOrders(startsWith){
 					info: info,
 					label: label,
 					apply: ()=>{
+						dataJson[0].Problems.filter(i=>{
+							if(i.ProblemText==parent_problem){
+								i.Orders.push({
+									"OrderCUI": info,
+									"OrderText": label,
+								})
+							}
+						})
 						arrCUIs.push({
 							type: 'order',
 							ordercui: info,
@@ -198,10 +286,12 @@ async function fetchAutoCompleteOrders(startsWith){
 						view.dispatch({
 							changes: {from: currentLineFrom, to: currentLineTo, insert: "\t"+label}
 						})
-						let contentLength = currentLineFrom+label.length+1					
+						let contentLength = currentLineFrom+label.length+1	
+						let setCursor = EditorSelection.cursor(contentLength)				
 						view.dispatch(
 			        view.state.update({
-			            selection: new EditorSelection([EditorSelection.cursor(contentLength)], 0)
+			            // selection: new EditorSelection([EditorSelection.cursor(contentLength)], 0)
+						selection: setCursor
 			        })
 			      )	
 					}
@@ -362,20 +452,24 @@ async function fetchProblems(CUI){
         currentRowText = line.text // Gets the text of the current row
         currentPosition = range.head // Gets the head position
 
+				
 		// Check for line changes
 		if(isLineChangeNum == currentLineFrom) {
 			isLineChanged = false
 		}else{
+			orderOnClick=false
 			isLineChanged = true
 			isLineChangeNum = currentLineFrom
 		}
 
         
         if( (currentRowText.length == 3) && currentRowText[0] != '' && currentRowText[0] != '\t'){
+			orderOnClick=false
 					fetchAutoComplete(currentRowText)
 		    }
 		if(currentRowText.length ==4 && currentRowText[0]=='\t'){
-				fetchAutoCompleteOrders(currentRowText.trimStart())
+			orderOnClick=false
+				fetchAutoCompleteOrders(currentRowText.trim())
 		}	
 		
 		    let index = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g,'').replace('\t','') === currentRowText.toLowerCase().replace(/\s/g,''))
@@ -385,16 +479,17 @@ async function fetchProblems(CUI){
 					
 
 						if (arrCUIs[index]['type'] == 'problem'){
+							orderOnClick=false
 							lastFetchedCUI = arrCUIs[index]['cui'].toString()
 							isCheckingOrder = false
 							fetchProblems(lastFetchedCUI)
 						}else{
-							
+								if(orderOnClick==false){
 								check_order_for_order=true
 								lastFetchedCUI = arrCUIs[index]['ordercui'].toString()
 								isCheckingOrder = true
 								fetchOrders(lastFetchedCUI)
-							
+							}
 						}
 
 				}
@@ -403,7 +498,7 @@ async function fetchProblems(CUI){
 					let previousLine=""
 					for(; temp_line > 1;){
 						temp_line--
-						if(state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trimStart().length){
+						if(state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trim().length){
 							previousLine = state.doc.line(temp_line).text
 							parent_problem = previousLine
 							break
@@ -446,7 +541,18 @@ async function fetchProblems(CUI){
 
 				
         highlightSuggestions()
-
+		return {
+			pos: range.head,
+			above: true,
+			strictSide: true,
+			arrow: true,
+			create: () => {
+			  let dom = document.createElement("div")
+			  dom.className = "cm-tooltip-cursor"
+			  dom.textContent = text
+			  return {dom}
+			}
+		  }
       })
 
  }
@@ -490,6 +596,9 @@ document.getElementById('editor-container').onclick = function(){
 }
 
 
+// document.getElementById('jsondata').onclick = function(){
+// 	console.log(dataJson)
+// }
 // This function handles the behavior of clicking an order
 // from the sidebar
 
@@ -500,7 +609,16 @@ function bindOrderSuggestions(){
 	for(var i=0; i <= all_suggestions.length - 1; i++){
 		
 		var elem = all_suggestions[i]
-		elem.onclick = function(e){
+		elem.addEventListener('click', function(e) {
+			dataJson[0].Problems.filter(i=>{
+				if(i.ProblemText==this.getAttribute('parent-problem')){
+					i.Orders.push({
+						"OrderCUI": this.getAttribute('data-cui'),
+						"OrderText": this.getAttribute('data-name'),
+					})
+				}
+			})
+			
 			arrCUIs.push({
 				type: this.getAttribute('data-type'),
 				ordercui: this.getAttribute('data-cui'),
@@ -509,19 +627,24 @@ function bindOrderSuggestions(){
 			})
 			var content = ''
 			if(currentRowText.length==0 || currentRowText.trim().length==0){
+				orderOnClick=true
 				content += '\t'
 				content += this.getAttribute('data-name')
 				content += '\n'
-				view.dispatch({
-			  		changes: {from: currentLineFrom, to:currentLineTo, insert: content}
-				})
+				view.dispatch(
+					view.state.update({
+			  		changes: {from: currentLineFrom, to:currentLineTo, insert: content} })
+				)
 				currentPosition = currentLineFrom+content.length
+				let setCursor = EditorSelection.cursor(currentPosition)
 				view.focus()
 				view.dispatch(
 				  view.state.update({
-					selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+					// selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+					selection: setCursor
 				})
 			  )	
+			  
 			}
 			else if(currentRowText.startsWith('\t') && index1===-1){
 				content += '\t'
@@ -530,10 +653,12 @@ function bindOrderSuggestions(){
 					changes: {from: currentLineFrom,to: currentLineTo, insert: content}
 				  })
 				currentPosition=  currentLineFrom+content.length
+				let setCursor = EditorSelection.cursor(currentPosition)
 				view.focus()
 				view.dispatch(
 				  view.state.update({
-					selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+					// selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+					selection: setCursor
 				})
 			  )	
 			}else{
@@ -560,7 +685,10 @@ function bindOrderSuggestions(){
 			view.focus()
 			
 	    highlightSuggestions()
-		}
+		})
+		// elem.onclick = function(e){
+	
+		// }
 
 	}
 
@@ -576,7 +704,21 @@ function bindProblemsSuggestions(){
 	for(var i=0; i <= all_suggestions.length - 1; i++){
 		
 		var elem = all_suggestions[i]
-		elem.onclick = function(e){
+		elem.addEventListener('click', function(e) {
+		
+			let test = dataJson[0].Problems.filter(item=>{
+				if(item.ProblemText==this.getAttribute('data-name')){
+					return item
+				}
+			})
+			if(test.length==0){
+				dataJson[0].Problems.push({
+					"ProblemText": this.getAttribute('data-name'),
+					"ProblemCUI": this.getAttribute('data-cui'),
+					"Orders":[],
+				})
+			}
+
 			arrCUIs.push({
 				type: this.getAttribute('data-type'),
 				cui: this.getAttribute('data-cui'),
@@ -590,7 +732,10 @@ function bindProblemsSuggestions(){
 			})
 			view.focus()
 			highlightSuggestions()
-		}
+		})
+		// elem.onclick = function(e){
+			
+		// }
 
 	}
 
@@ -609,8 +754,8 @@ function highlightSuggestions(){
 		var index = arrCUIs.findIndex(e => e.cui === elem.getAttribute('data-cui'))
 		if (index !== -1) {
 			if (arrCUIs[index]['type'] == elem.getAttribute('data-type')){
-
-				view ? view.viewState.state.doc.text.forEach((e) {
+				
+				view ? view.state.doc.toJSON().forEach((e)=> {
 					(e.toString().toLowerCase().replace(/\s/g,'').replace('\t','') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g,'')) ? elem.classList.add('highlighted') : null
 				}) : null
 
@@ -620,7 +765,7 @@ function highlightSuggestions(){
 		if (index1 !== -1) {
 			if (arrCUIs[index1]['type'] == elem.getAttribute('data-type')){
 
-					view ? view.viewState.state.doc.text.forEach((e) {
+					view ? view.state.doc.toJSON().forEach((e)=> {
 						(e.toString().toLowerCase().replace(/\s/g,'').replace('\t','') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g,'')) ? elem.classList.add('highlighted') : null
 					}) : null
 				
