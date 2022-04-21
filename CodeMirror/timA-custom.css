@@ -1,3 +1,7 @@
+.container-fluid{
+    width:95%;
+    margin-top:3em;
+}
 div.tooltip-inner{
     border: solid .2rem darkblue;
     background-color: cornflowerblue;
@@ -39,16 +43,8 @@ div.tooltip-inner{
 #text-area-notes{
     width: 100%;
     height: 80%;
-    border: solid .2rem darkblue;}
-
-/* #div-notes-header{
-    text-align: center;
-    color: darkblue;
-    background-color: gainsboro;
-    border:solid .2rem gray;
-    font-size: 1.3rem;
-    padding: .5rem;
-} */
+    border: solid .2rem darkblue;
+}
 
 .div-header {
     text-align: center;
@@ -70,18 +66,11 @@ div.tooltip-inner{
 }
 
 
-.div-suggestion{
-    width: 100%;
-    border-bottom: solid darkblue;
-    border-width: 0.15rem 0;
-    padding: 0.5rem .3rem;
-    color: darkblue;
-    background:orange;
-}
 span.expand-contract:before {
     font-family: "Font Awesome 5 Free";
     content: "\f068"; /*-*/
-    font-weight: bold;}
+    font-weight: bold;
+}
 
 .contracted span.expand-contract:before {
     font-family: "Font Awesome 5 Free";
@@ -89,14 +78,27 @@ span.expand-contract:before {
     font-weight: bold;
 }
 
-#suggestions-content{
+.suggestions-container {
     border: solid 0.2rem darkblue;
+    width: 100%;
+    /* padding: 1em 0em 0em; */
+    color: darkblue;
+    background: orange;
 }
+
+.suggestions-container.is-empty {
+    background: lightgray;
+}
+
+.div-suggestion {
+    padding: .7em .2em !important; 
+}
+
 .copy-orders{
     cursor: pointer;
 }
 .contracted .div-order{
-    display:none;
+    display:none !important;
 }
 
 .div-order {
@@ -111,7 +113,6 @@ span.expand-contract:before {
 .div-order.selected {
     background-color: greenyellow;
 }
-
 
 .order-text{
     width:75%;
@@ -139,4 +140,17 @@ span.expand-contract:before {
     display: inline-block;
     width:7%;
     text-align-last: right;
+}
+
+.editor {
+    width: 100%;
+    min-height: 600px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    padding:1em;
+}
+
+.editor {
+    background-color: whitesmoke;
 }

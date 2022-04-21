@@ -30,20 +30,21 @@ var searchOptions = []
 var lastFetchedCUI = ''
 var isCheckingOrder = false
 var suggestions = document.getElementById('suggestions-content')
+var view
 
 // Theme Customization
 
 let myTheme = EditorView.theme({
 	"cm-editor": {
-		fontSize: "24px",
+		fontSize: "18px",
 		width: "100%",
 		minHeight: "600px",
 		outline: 0,
 		border: 0,
-		fontFamily: 'Poppins'
+		fontFamily: 'Verdana'
 	},
 	".cm-content": {
-		fontSize: "24px"
+		fontSize: "18px"
 	},
 	".cm-activeLine": {
 		backgroundColor: "initial"
@@ -52,14 +53,17 @@ let myTheme = EditorView.theme({
 		display: "none"
 	},
 	".cm-scroller": {
-		minHeight: "600px"
+		minHeight: "600px",
+		fontFamily: "Verdana"
 	},
 	".cm-tooltip.cm-tooltip-autocomplete > ul > li": {
-		lineHeight: 1.8
+		lineHeight: 1.8,
+		fontFamily: "Verdana",
+
 	},
 	".cm-tooltip": {
-		fontSize: "24px",
-		fontFamily: 'Poppins'
+		fontSize: "18px",
+		fontFamily: 'Verdana'
 	},
 	".cm-lineWrapping": {
 		// wordBreak: "break-all",
@@ -215,10 +219,10 @@ async function fetchAutoCompleteOrders(startsWith) {
 
 // Fetch problem results from the API
 
-async function fetchProblems(CUI) {
+async function fetchData(CUI, parentCategory) {
 
 	var cuis = []
-
+	var childCategory, textField, typeField, descriptionField, scoreField;
 	cuis.push({
 		CUI: CUI
 	})
@@ -227,41 +231,32 @@ async function fetchProblems(CUI) {
 		"CUIs": cuis
 	}
 
-	document.getElementById('preloader').style.display = 'inline-flex'
-	document.getElementById('particles-js').style.display = 'none'
-	suggestions.innerHTML = ''
+	$('.suggestions-container').remove();
 	await axios.post('https://api.mi1.ai/api/PotentialComorbidities', cuisBody, { headers })
+		.then(async function (response) {
+			childCategory = 'Problem';
+			textField = 'Problem';
+			typeField = '';
+			descriptionField = '';
+			scoreField = 'Score';
+
+			showOrderData(response, parentCategory, childCategory, textField, typeField, descriptionField, scoreField);
+		});
+	// if (response.data.length === 0) {
+	await axios.post('https://api.mi1.ai/api/AssocOrders', cuisBody, { headers })
 		.then(function (response) {
-			if (response.data.length === 0) {
-				// suggestions.innerHTML = '<div><h3>No Data for problems:</h3></div>'	
-				document.getElementById("defaultOpen").click();
-				document.getElementById("problem_tab").style.display = 'block';
-				document.getElementById("suggestions-content").style.display = 'none';
-				document.getElementById("orders_tab").style.display = 'none';
-				document.getElementById('preloader').style.display = 'none'
-				document.getElementById('particles-js').style.display = 'block'
+			if (response.data.length != 0) {
+				childCategory = 'Order';
+				textField = 'Order';
+				typeField = 'Type';
+				descriptionField = '';
+				scoreField = 'Score';
+				showOrderData(response, parentCategory, childCategory, textField, typeField, descriptionField, scoreField);		// if (response.data.length === 0) {
 			}
-			else {
-				suggestions.innerHTML = ''
-				if (response.data.length > 0) {
-					document.getElementById('particles-js').style.display = 'none'
-					document.getElementById("suggestions-content").style.display = 'block';
-					document.getElementById("defaultOpen").click();
-					document.getElementById("problem_tab").style.display = 'block';
-					document.getElementById("orders_tab").style.display = 'none';
-					suggestions.innerHTML += '<div><h3>Associated Conditions:</h3></div>'
-				}
-				var suggestion_str = ''
-				for (var i = 0; i <= response.data.length - 1; i++) {
-					suggestion_str += "<div class='suggestion' data-type='problem' data-cui='" + response.data[i].CUI + "' data-name='" + response.data[i].Problem + "'>"
-					suggestion_str += "<h5 class='suggestion-text'>"
-					suggestion_str += response.data[i].Problem
-					suggestion_str += "</h5>"
-					suggestion_str += "</div>"
-				}
-				suggestions.innerHTML += suggestion_str
-				document.getElementById('preloader').style.display = 'none'
-			}
+		}).then(function () {
+
+			// bindProblemsSuggestions()
+			// highlightSuggestions()
 
 		}).catch(function (error) {
 
@@ -269,84 +264,10 @@ async function fetchProblems(CUI) {
 			suggestions.innerHTML = ''
 			lastFetchedCUI = ''
 			isCheckingOrder = false
-
-		}).then(function () {
-
-			bindProblemsSuggestions()
-			highlightSuggestions()
-
 		})
-
 }
 
-// Fetch order results from the API
-async function fetchOrders(CUI) {
 
-
-	suggestions.innerHTML = ''
-
-	var bodyUI = {
-		"CUIs":
-			[
-				{
-					"CUI": CUI
-				}
-			]
-	}
-
-	document.getElementById('preloader').style.display = 'inline-flex'
-	// document.getElementById('particles-js').style.display = 'none'
-	await axios.post('https://api.mi1.ai/api/AssocOrders', bodyUI, { headers })
-		.then(function (response) {
-
-			if (response.data.length == 0) {
-				// document.getElementById('particles-js').style.display = 'block'
-				// suggestions.innerHTML = '<div><h3>No Data for orders:</h3></div>'
-				document.getElementById("suggestions-content").style.display = 'none';
-				// document.getElementById("problem_tab").style.display = 'none';
-				// document.getElementById("orders_tab").style.display = 'block';
-				// document.getElementById("defaultOpenForOrders").click();
-				document.getElementById('preloader').style.display = 'none'
-			}
-			else {
-				suggestions.innerHTML = ''
-				if (response.data.length > 0) {
-					if (check_order_for_order == true) { suggestions.innerHTML += '<div><h3>Orders Associated with Orders:</h3></div>' }
-					else { suggestions.innerHTML += '<div><h3>Orders Associated with Problems:</h3></div>' }
-					document.getElementById("problem_tab").style.display = 'none';
-					document.getElementById("orders_tab").style.display = 'block';
-					document.getElementById("suggestions-content").style.display = 'block';
-					document.getElementById("defaultOpenForOrders").click();
-					document.getElementById('particles-js').style.display = 'none'
-				}
-				var suggestion_str = ''
-				for (var i = 0; i <= response.data.length - 1; i++) {
-					suggestion_str += "<div class='suggestion' data-type='order' data-problem-cui='" + CUI + "' data-cui='" + response.data[i].Code + "' data-name='" + response.data[i].Order + "' parent-problem='" + parent_problem + "' >"
-					suggestion_str += "<h5 class='suggestion-text'>"
-					suggestion_str += response.data[i].Order
-					suggestion_str += "</h5>"
-					suggestion_str += "<span class='tag'>" + response.data[i].Type + "</span>"
-					suggestion_str += "</div>"
-				}
-				suggestions.innerHTML += suggestion_str
-				document.getElementById('preloader').style.display = 'none'
-			}
-
-		}).catch(function (error) {
-
-			document.getElementById('preloader').style.display = 'none'
-			suggestions.innerHTML = ''
-			lastFetchedCUI = ''
-			isCheckingOrder = false
-
-		}).then(function () {
-
-			bindOrderSuggestions()
-			highlightSuggestions()
-
-		})
-
-}
 
 // The function responsible about the cursor
 // Takes state as input and processes information
@@ -365,6 +286,7 @@ function getCursorTooltips(state: EditorState) {
 			let text = line.number + ":" + (range.head - line.from)
 			currentRowText = line.text // Gets the text of the current row
 			currentPosition = range.head // Gets the head position
+			var parentCategory
 
 			// Check for line changes
 			if (isLineChangeNum == currentLineFrom) {
@@ -391,62 +313,61 @@ function getCursorTooltips(state: EditorState) {
 				if (arrCUIs[index]['type'] == 'problem') {
 					lastFetchedCUI = arrCUIs[index]['cui'].toString()
 					isCheckingOrder = false
-					fetchProblems(lastFetchedCUI)
-				} else {
-
+					parentCategory = 'Problem'
+				} else {						//cursor is on an order
+					parentCategory = 'Order'
 					check_order_for_order = true
 					lastFetchedCUI = arrCUIs[index]['ordercui'].toString()
 					isCheckingOrder = true
-					fetchOrders(lastFetchedCUI)
-
 				}
+				fetchData(lastFetchedCUI, parentCategory)
 
 			}
-			if (line.number > 1) {
-				let temp_line = line.number
-				let previousLine = ""
-				for (; temp_line > 1;) {
-					temp_line--
-					if (state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trimStart().length) {
-						previousLine = state.doc.line(temp_line).text
-						parent_problem = previousLine
-						break
-					}
-				}
-				let index1 = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === currentRowText.toLowerCase().replace(/\s/g, ''))
+			// if (line.number > 1) {
+			// 	let temp_line = line.number
+			// 	let previousLine = ""
+			// 	for (; temp_line > 1;) {
+			// 		temp_line--
+			// 		if (state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trimStart().length) {
+			// 			previousLine = state.doc.line(temp_line).text
+			// 			parent_problem = previousLine
+			// 			break
+			// 		}
+			// 	}
+			// 	let index1 = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === currentRowText.toLowerCase().replace(/\s/g, ''))
 
-				if (index1 !== -1) {
-					if (isCheckingOrder == false) {
-						if (arrCUIs[index1]['type'] == 'order') {
-							isCheckingOrder = true
-							check_order_for_order = true
-							lastFetchedCUI = arrCUIs[index1]['ordercui'].toString()
+			// 	if (index1 !== -1) {
+			// 		if (isCheckingOrder == false) {
+			// 			if (arrCUIs[index1]['type'] == 'order') {
+			// 				isCheckingOrder = true
+			// 				check_order_for_order = true
+			// 				lastFetchedCUI = arrCUIs[index1]['ordercui'].toString()
 
-							fetchOrders(lastFetchedCUI)
-						}
-					}
-				}
-				let previouslineIndex = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === previousLine.toLowerCase().replace(/\s/g, ''))
+			// 				fetchOrders(lastFetchedCUI)
+			// 			}
+			// 		}
+			// 	}
+			// 	let previouslineIndex = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === previousLine.toLowerCase().replace(/\s/g, ''))
 
-				if (previouslineIndex !== -1 && index1 === -1 && isLineChanged == true) {
-					if (arrCUIs[previouslineIndex]['type'] == 'problem') {
+			// 	if (previouslineIndex !== -1 && index1 === -1 && isLineChanged == true) {
+			// 		if (arrCUIs[previouslineIndex]['type'] == 'problem') {
 
-						check_order_for_order = false
-						lastFetchedCUI = arrCUIs[previouslineIndex]['cui'].toString()
-						isCheckingOrder = true
-						fetchOrders(lastFetchedCUI)
+			// 			check_order_for_order = false
+			// 			lastFetchedCUI = arrCUIs[previouslineIndex]['cui'].toString()
+			// 			isCheckingOrder = true
+			// 			fetchOrders(lastFetchedCUI)
 
-					}
-				}
-			}
+			// 		}
+			// 	}
+			// }
 
-			if (line.number == 1 && state.doc.line(line.number).text == '') {
-				suggestions.innerHTML = ''
-				// document.getElementById("problem_tab").style.display = "none"
-				// document.getElementById("particles-js").style.display = "block"
-				lastFetchedCUI = ''
-				isCheckingOrder = false
-			}
+			// if (line.number == 1 && state.doc.line(line.number).text == '') {
+			// suggestions.innerHTML = ''
+			// document.getElementById("problem_tab").style.display = "none"
+			// document.getElementById("particles-js").style.display = "block"
+			// 	lastFetchedCUI = ''
+			// 	isCheckingOrder = false
+			// }
 
 
 			highlightSuggestions()
@@ -460,39 +381,39 @@ function getCursorTooltips(state: EditorState) {
 // All necessary extensions added to it
 // Cursor Movement, Auto Completion, and The use of Tab to indent
 
-const initialState = EditorState.create({
-	doc: '',
-	extensions: [
-		basicSetup,
-		keymap.of([indentWithTab]),
-		myTheme,
-		cursorTooltip(),
-		autocompletion({ override: [myCompletions] }),
-		EditorView.lineWrapping,
-		indentUnit.of("\t")
-	],
+
+jQuery(function () {
+	const initialState = EditorState.create({
+		doc: '',
+		extensions: [
+			basicSetup,
+			keymap.of([indentWithTab]),
+			myTheme,
+			cursorTooltip(),
+			autocompletion({ override: [myCompletions] }),
+			EditorView.lineWrapping,
+			indentUnit.of("\t")
+		],
+	})
+
+	// Initialization of the EditorView
+
+	view = new EditorView({
+		parent: document.getElementById('editor'),
+		state: initialState,
+	})
+
+	let element: HTMLElement = $('#editor-container')[0] as HTMLElement;
+
+
+	// Resets the position back to the view
+	// When someone clicks the title of the block that contains the editor
+	element.addEventListener('click', function () {
+		view.focus()
+	})
+	// Focuses on the view on page load to let physicians type immediately
+	view.focus();
 })
-
-// Initialization of the EditorView
-
-const view = new EditorView({
-	parent: document.getElementById('editor'),
-	state: initialState,
-})
-
-// Focuses on the view on page load to let physicians type immediately
-
-window.onload = function () {
-	view.focus()
-}
-
-// Resets the position back to the view
-// When someone clicks the title of the block that contains the editor
-
-document.getElementById('editor-container').onclick = function () {
-	view.focus()
-}
-
 
 // This function handles the behavior of clicking an order
 // from the sidebar
@@ -559,7 +480,7 @@ function bindOrderSuggestions() {
 					changes: { from: final_line.to, insert: content }
 				})
 			}
-			document.getElementById('suggestions-content').innerHTML = ''
+			// document.getElementById('suggestions-content').innerHTML = ''
 
 			view.focus()
 
@@ -607,91 +528,178 @@ function highlightSuggestions() {
 
 	let all_suggestions = document.getElementsByClassName('suggestion')
 
-	for (var i = 0; i <= all_suggestions.length - 1; i++) {
+	// for (var i = 0; i <= all_suggestions.length - 1; i++) {
 
-		var elem = all_suggestions[i]
-		var index = arrCUIs.findIndex(e => e.cui === elem.getAttribute('data-cui'))
-		if (index !== -1) {
-			if (arrCUIs[index]['type'] == elem.getAttribute('data-type')) {
+	// 	var elem = all_suggestions[i]
+	// 	var index = arrCUIs.findIndex(e => e.cui === elem.getAttribute('data-cui'))
+	// 	if (index !== -1) {
+	// 		if (arrCUIs[index]['type'] == elem.getAttribute('data-type')) {
 
-				view ? view.viewState.state.doc.text.forEach((e) {
-					(e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
-				}) : null
+	// 			view ? view.viewState.state.doc.text.forEach((e) {
+	// 				(e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
+	// 			}) : null
 
-			}
-		}
-		var index1 = arrCUIs.findIndex(e => e.ordercui === elem.getAttribute('data-cui'))
-		if (index1 !== -1) {
-			if (arrCUIs[index1]['type'] == elem.getAttribute('data-type')) {
+	// 		}
+	// 	}
+	// 	var index1 = arrCUIs.findIndex(e => e.ordercui === elem.getAttribute('data-cui'))
+	// 	if (index1 !== -1) {
+	// 		if (arrCUIs[index1]['type'] == elem.getAttribute('data-type')) {
 
-				view ? view.viewState.state.doc.text.forEach((e) {
-					(e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
-				}) : null
+	// 			view ? view.viewState.state.doc.text.forEach((e) {
+	// 				(e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
+	// 			}) : null
 
-			}
-		}
+	// 		}
+	// 	}
 
-	}
+}
 
-	function getOrderData() {
+//display output from api call
+function showOrderData(response, parentCategory, childCategory, textField = '', typeField = '', descriptionField = '', scoreField = '') {
 
-		var $divOrder;
-		$.ajax({
-			method: "GET",
-			url: "data-functions.php",
-			// data: { action: "getOrderData" },
-			dataType: "json",
-		}).done(function (result) {
-			for (i = 1; i < result.length; i++) {
-				const order = result[i][0];
-				const description = result[i][1];
-				const score = result[i][2];
-				const orderType = result[i][3];
-				const parent = result[i][4];
+	var $divOrder;
+	var $divSuggestion;
+	var i;
+	var title = parentCategory + ': ' + currentRowText;
+	$('#suggestions-title-text').text(title);
 
-				let faIcon;
-				let $divSuggestion;
-				let iconTitle;
-				if (order) {
+	//populate parent div
+	var containerID = 'div-suggestion-' + childCategory;
+	//header item
+	// let headerText = response.data[0].Known_Problem;
+	$divSuggestion = $('#suggestion-header-container').clone();
+	$divSuggestion.addClass('suggestions-container');
 
-					switch (orderType) {
-						case 'Diagnosis':
-							$divSuggestion = $('#div-suggestion-template-container').clone();
-							$divSuggestion.find('.suggestion-text').text(order);
-							$divSuggestion.attr('id', 'div-suggestion-' + order.replace(' ', ''));
-							$('#div-suggestions-container').append($divSuggestion);
-							break;
-						default:
-							$divOrder = $('#div-order-template').clone();
-							// $divOrder.removeClass('d-none');
-							switch (orderType) {
-								case 'Lab':
-									faIcon = "fa-flask";
-									iconTitle = "Lab Test";
-									break;
-								case 'Prescription':
-									faIcon = "fa-pills";
-									iconTitle = "Prescription";
-									break;
-								case 'Procedure':
-									faIcon = "fa-hospital-user";  //heart-pulse
-									iconTitle = "Procedure";
-									break;
-							}
+	if (response.data.length > 0) {
 
-							$divOrder.find('.order-text').text(order);          //add order text
-							$divOrder.find('.order-description').attr('data-bs-original-title', description);       //add tooltip
-							$divOrder.find('.order-type').addClass('fas ' + faIcon);
-							$divOrder.find('.order-type').attr('title', iconTitle);       //add tooltip
-							$divOrder.find('.order-score').css('filter', 'brightness(' + (1 + (score / 100)) + ')');       //change brightness off score indicator
-							$divOrder.find('.order-score').attr('data-bs-original-title', score + '%');
-							$divOrder.removeAttr('id');
-							$('#div-suggestion-' + parent.replace(' ', '')).append($divOrder);
-							break;
-					}
+		$divSuggestion.find('.suggestion-text').text('Asssociated ' + childCategory + 's');
+		$divSuggestion.attr('id', containerID);
+		//add click event to expand-contract
+		$divSuggestion.find('.expand-contract').on("click", function (e) {
+			$(e.currentTarget).parents('.suggestions-container').toggleClass('contracted');
+		})
+		//add click event to copy text
+		$divSuggestion.find('.copy-orders').on("click", function (e) {
+			let orderText = '';// $(e.currentTarget).siblings('.suggestion-text').text() + '\n';
+			let orders = $(e.currentTarget).parents('.suggestions-container').find('.div-order.selected .order-text');
+			orders.each(function (i, obj) {
+				orderText += '\t' + $(obj).text() + '\n';
+			})
+			navigator.clipboard.writeText(orderText);
+			showToastAlert("", "Selected Items have been Copied to the Clipboard.", "middle-center");
+		});
+		$('#sidebar-container').append($divSuggestion);
+
+		//populate child divs
+		for (i = 1; i < response.data.length; i++) {
+			let itemText = (textField == '' ? '' : response.data[i][textField]);
+			let itemDescription = (descriptionField == '' ? '' : response.data[i][descriptionField]);
+			let itemScore = (scoreField == '' ? '' : response.data[i][scoreField]);
+			let itemType = (typeField == '' ? '' : response.data[i][typeField]);
+
+			let faIcon;
+			let iconTitle;
+			if (itemText != '') {
+				$divOrder = $('#div-order-template').clone();
+				switch (itemType) {
+					case 'Lab':
+						faIcon = "fa-flask";
+						iconTitle = "Lab Test";
+						break;
+					case 'Prescription':
+						faIcon = "fa-pills";
+						iconTitle = "Prescription";
+						break;
+					case 'Procedure':
+						faIcon = "fa-hospital-user";  //heart-pulse
+						iconTitle = "Procedure";
+						break;
 				}
 
+				$divOrder.find('.order-text').text(itemText);          //add order text
+				if (itemDescription != '') {
+					$divOrder.find('.order-description').attr('data-bs-original-title', itemDescription);       //add tooltip
+				}
+				if (itemType != '') {
+					$divOrder.find('.order-type').addClass('fas ' + faIcon);
+					$divOrder.find('.order-type').attr('title', iconTitle);
+				}
+				if (itemScore != '') {     //add tooltip
+					$divOrder.find('.order-score').css('filter', 'brightness(' + (1 + (itemScore)) + ')');       //change brightness off score indicator
+					$divOrder.find('.order-score').attr('data-bs-original-title', itemScore + '%');
+				}
+				$divOrder.removeAttr('id');
+				let containerDiv = $('#sidebar-container').find('#' + containerID);
+
+				//add click event to order for selections/deselections
+				$divOrder.on("click", function (e) { $(e.currentTarget).toggleClass("selected") });
+
+				containerDiv.append($divOrder);
 			}
-		});
+		}
+	}
+	else {
+		$divSuggestion.find('.suggestion-text').text('We were not able to find any ' + childCategory + 's');
+		$divSuggestion.addClass('is-empty');
+		$divSuggestion.find('.expand-contract').addClass('d-none');
+		$divSuggestion.find('.copy-orders').addClass('d-none');
+		$('#sidebar-container').append($divSuggestion);
+	}
+
+}
+
+
+//generic function to hide the toast alert
+function hideToastAlert() {
+	var myAlert = $("#mi1-toast")[0];
+	if (myAlert) {
+		var bsAlert = new bootstrap.Toast(myAlert);
+		bsAlert.hide();
 	}
 }
+
+//generic function to show the toast alert
+function showToastAlert(title, message, position) {
+	$("#toast-title").text(title);
+	$("#toast-message").text(message);
+	var myClass;
+	switch (position) {
+		case "top-left":
+			myClass = "top-0 start-0";
+			break;
+		case "top-center":
+			myClass = "top-0 start-50 translate-middle-x";
+			break;
+		case "top-right":
+			myClass = "top-0 end-0";
+			break;
+		case "middle-left":
+			myClass = "top-50 start-0 translate-middle-y";
+			break;
+		case "middle-center":
+			myClass = "top-50 start-50 translate-middle";
+			break;
+		case "middle-right":
+			myClass = "top-50 end-0 translate-middle-y";
+			break;
+		case "bottom-left":
+			myClass = "bottom-0 start-0";
+			break;
+		case "bottom-center":
+			myClass = "bottom-0 start-50 translate-middle-x";
+			break;
+		case "bottom-right":
+			myClass = "bottom-0 end-0";
+			break;
+		default:
+	}
+	$("#mi1-toast").attr("class", "toast position-fixed p-3 " + myClass);
+	$('.toast-header').toggleClass("d-none", title.length == 0);
+	$('toast-body').toggleClass("d-none", message.length == 0);
+	var myAlert = $("#mi1-toast")[0];
+	if (myAlert) {
+		var bsAlert = new bootstrap.Toast(myAlert);
+		bsAlert.show();
+	}
+}
+

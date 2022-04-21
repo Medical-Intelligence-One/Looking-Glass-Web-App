@@ -8,10 +8,7 @@
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
         </script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
-        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <script src="tima-index.js"></script>
+    <!-- <script src="tima-index.js"></script> -->
     <script src="tima-scripts.ts"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
         integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
@@ -21,7 +18,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="tima-custom.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" type="text/css" href="tima-custom.css" />
     <title>
         MI-1 Notes Application
     </title>
@@ -32,15 +31,17 @@
 <body>
     <div id="templates" class="d-none">
         <!-- template for suggestion header -->
-        <div id="div-suggestion-template-container" class="suggestions-container">
-            <div id="div-suggestion-template" class="div-suggestion d-flex text-center align-items-center">
+        <div id="suggestion-header-container" class="contracted">
+            <div id="div-suggestion-header" class="div-suggestion d-flex text-center align-items-center">
                 <span class="ms-1 me-1 expand-contract" title="Expand/Contract Diganosis"></span>
                 <span class="suggestion-text w-100"></span>
-                <span class="ms-1 me-1 fas fa-copy copy-orders" title="Copy Selected Orders to Clipboard"></span>
+                <span class="ms-1 me-1 fas fa-copy copy-orders" title="Copy Selected Items to Clipboard"></span>
             </div>
+            <!-- <div id="suggestions-content">
+            </div> -->
         </div>
         <!-- template for order  -->
-        <div id="div-order-template" class="div-order">
+        <div id="div-order-template" class="div-order d-flex align-items-center">
             <span class="order-description fa-solid fa-circle-info" data-bs-toggle="tooltip"
                 data-bs-placement="bottom"></span>
             <span class="order-text"></span>
@@ -49,7 +50,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <div id="div-patient-details" class="col-12 mb-3 div-header">
                 <div class="row">
@@ -59,24 +60,28 @@
                 </div>
             </div>
             <div id="div-main" class="row">
-                <div id="editor-container" class="col-8">
-                    <div id="div-notes-header" class="div-header">Assessment and Plan</div>
-                    <div class="editor" id="editor"></div>
-                    <!-- <div id="div-notes-body">
+                <div class="code-mirror-app col-8">
+                    <div class="code-mirror-wrapper">
+                        <div id="editor-container">
+                            <div id="div-notes-header" class="div-header">Assessment and Plan</div>
+                            <div class="editor" id="editor"></div>
+                            <!-- <div id="div-notes-body">
                         <textarea id="text-area-notes"></textarea>
                     </div> -->
-                </div>
-                <div id="suggestions-container" class="col-4">
-                    <div id="div-order-header" class="div-header">
-                        <span class="col-2"></span>
-                        <span id="order-header-text" class="col-8">Orders</span>
-                        <span class="col-2"></span>
+                        </div>
                     </div>
-                    <div id="suggestions-content">
+                </div>
+                <div id="sidebar-container" class="col-4">
+                    <div class="div-header">
+                        <span class="col-2"></span>
+                        <span id="suggestions-title-text" class="col-8">Associations</span>
+                        <span class="col-2"></span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     <div id="mi1-toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true"
         data-bs-animation="true" data-bs-delay="1000">
@@ -88,7 +93,7 @@
         </div>
     </div>
     <!-- Spinner overlay -->
-    <div id="overlay" class="overlay">
+    <div id="preloader" class="overlay">
         <div class="loader fa-solid fa-spinner fa-spin d-none" style="--fa-animation-duration:2s;">
         </div>
     </div>
@@ -97,22 +102,15 @@
 </html>
 <script>
     $(document).ready(function () {
+        // $('#editor-container').on("click", function () {
+        //     view.focus()
+        // });
         $("body").tooltip({ selector: '[data-bs-toggle=tooltip]' });
         // $('[data-toggle="tooltip"]').tooltip({ html: true });
         $('[data-bs-toggle="popover"]').popover({ html: true });
 
-        $('.expand-contract').on("click", function (e) {
-            $(e.currentTarget).parents('.suggestions-container').toggleClass('contracted');
-        })
-        $('.div-order').on("click", function (e) { $(e.currentTarget).toggleClass("selected") });
-        $('.copy-orders').on("click", function (e) {
-            let orderText = $(e.currentTarget).siblings('.suggestion-text').text() + '\n';
-            var orders = $(e.currentTarget).parents('.suggestions-container').find('.div-order.selected .order-text');
-            orders.each(function (i, obj) {
-                orderText += '\t' + $(obj).text() + '\n';
-            })
-            navigator.clipboard.writeText(orderText);
-            showToastAlert("", "The Orders have been Copied to the Clipboard.", "middle-center");
-        });
+        // $('.expand-contract').on("click", function (e) {
+        //     $(e.currentTarget).parents('.suggestions-container').toggleClass('contracted');
+        // })
     });
 </script>
