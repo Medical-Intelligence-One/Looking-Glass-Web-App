@@ -98,26 +98,16 @@
                     <!-- Tabs Sections for problems-->
                     <div style="display: none" id="problem_tab" class="tab">
                         <div class="container-flex">
-                            <!-- <div class="row">
-                <div class="col-sm">
-                  <button class="tablinks" onclick="openCity(event, 'London')" >Web Search</button>
-                </div>
-                <div class="col-sm">
-                  <button class="tablinks" onclick="openCity(event, 'Paris')">Practice Guideline</button>
-                </div>
-                <div class="col-sm">
-                  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Chart Search</button>
-                </div>
-              </div> -->
+
                             <div class="row">
                                 <div class="col-sm">
-                                    <button style="height: 100%;" class="tablinks" onclick="openCity(event, 'London')">Experts</button>
+                                    <button style="height: 100%;" class="tablinks" onclick="tabMgmt(event, 'tabExperts')">Experts</button>
                                 </div>
                                 <div class="col-sm">
-                                    <button class="tablinks" onclick="openCity(event, 'Associated_Conditions')" id="defaultOpen">Associated Conditions</button>
+                                    <button class="tablinks" onclick="tabMgmt(event, 'Associated_Conditions')" id="defaultOpen">Associated Conditions</button>
                                 </div>
                                 <div class="col-sm">
-                                    <button class="tablinks" onclick="openCity(event, 'Tokyo')">Alternative Diagnosis</button>
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabAltDiagnosis')">Alternative Diagnosis</button>
                                 </div>
                             </div>
                         </div>
@@ -129,33 +119,38 @@
 
                             <div class="row">
                                 <div class="col-sm">
-                                    <button class="tablinks" onclick="openCity(event, 'Associated_Conditions')" id="defaultOpenForOrders">Associated Orders</button>
+                                    <button class="tablinks" onclick="tabMgmt(event, 'Associated_Conditions')" id="defaultOpenForOrders">Associated Orders</button>
                                 </div>
                                 <div class="col-sm">
-                                    <button class="tablinks" onclick="openCity(event, 'London')">Order Editor</button>
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabOrderEditor')">Order Editor</button>
                                 </div>
                                 <div class="col-sm">
-                                    <button class="tablinks" onclick="openCity(event, 'Tokyo')">Alternative Orders</button>
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabAltOrders')">Alternative Orders</button>
                                 </div>
 
                             </div>
                         </div>
                     </div>
 
-                    <div id="London" class="tabcontent">
-                        <h3>London</h3>
-                        <p>London is the capital city of England.</p>
+                    <div id="tabExperts" class="tabcontent">
+                        <h3>Experts</h3>
+                        <p>experts data</p>
                     </div>
 
-                    <div id="Paris" class="tabcontent">
-                        <h3>Paris</h3>
-                        <p>Paris is the capital of France.</p>
+                    <div id="tabAltDiagnosis" class="tabcontent">
+                        <h3>Alternative Diagnosis</h3>
+                        <p>Alternative Diagnosis data</p>
                     </div>
 
-                    <div id="Tokyo" class="tabcontent">
-                        <h3>Tokyo</h3>
-                        <p>Tokyo is the capital of Japan.</p>
+                    <div id="tabAltOrders" class="tabcontent">
+                        <h3>Alternative Orders</h3>
+                        <p>Alternative Orders data</p>
                     </div>
+                    <div id="tabOrderEditor" class="tabcontent">
+                        <h3>Order Editor</h3>
+                        <p>Order Editor data</p>
+                    </div>
+
                     <div id="Associated_Conditions" class="tabcontent">
 
                         <!-- Particle js integration -->
@@ -182,7 +177,7 @@
 
     </div>
     <script>
-        function openCity(evt, cityName) {
+        function tabMgmt(evt, cityName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {

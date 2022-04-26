@@ -15,6 +15,8 @@ const headers = {
 
 // Initialization
 
+const apiUrl = 'https://api.mi1.ai/api/'
+const apiUrl_Dev = 'http://127.0.0.1:5000/'
 var dataJson = []
 var isLineChanged = false;
 var isLineChangeNum = 1;
@@ -101,11 +103,11 @@ dataJson.push({
 })
 
 // local fhir api call to get patients data 
-axios.post("http://127.0.0.1:5000/PatientData", fhirBody)
+axios.post(apiUrl_Dev+"PatientData", fhirBody)
 	.then((response)=>{
-		let dob = response.data.DOB
-		let mrn = response.data.MRN
-		let name = response.data.Name
+		let dob = response.data[0].DOB
+		let mrn = response.data[0].MRN
+		let name = response.data[0].Name
 		let fhirHTMl =  document.getElementById("fhir")
 		var fhirHTMl_div =''
 		fhirHTMl_div+= '<div class="fhir-header"><h4>'
@@ -122,14 +124,14 @@ const fhirConditionsBody = {
 		"MI1ClientID": MI1_Client_ID,
 }
 // local fhir api call to get patients condition
-axios.post("http://127.0.0.1:5000/PatientConditions",fhirConditionsBody)
+axios.post(apiUrl_Dev+"PatientConditions",fhirConditionsBody)
 	.then((response)=>{
 		console.log(response.data)
 		// console.log(response.data)
 		// for(var i = 0; i < response.data.Conditions.length; i++){
 			// if(response.data.length>0) alert("Code: "+response.data[0].Code+"\n"+"Text: "+response.data[0].Text)
 			// else alert("No Condition data")
-			alert(JSON.stringify(response.data))
+			// console.log(JSON.stringify(response.data))
 		// }
 	})
 
@@ -138,6 +140,9 @@ axios.post("http://127.0.0.1:5000/PatientConditions",fhirConditionsBody)
 
 function myCompletions(context: CompletionContext) {
 
+	// Does not give autocompletion after two spaces 
+	// if( (currentRowText.length > 0 && currentRowText[0] == ' ') || (currentRowText.length < 3 || currentRowText.split(" ").length>2)){
+		
 	if( (currentRowText.length > 0 && currentRowText[0] == ' ') || (currentRowText.length < 3)){
   	searchOptions = []
   }
@@ -191,7 +196,7 @@ async function fetchAutoComplete(startsWith){
 		]
 	}
 
-	await axios.post('https://api.mi1.ai/api/autocompleteProblems', body, {headers})
+	await axios.post(apiUrl+'autocompleteProblems', body, {headers})
 		.then(function (response) {		    
 			
 			if (response.data.length > 0){
@@ -229,11 +234,11 @@ async function fetchAutoComplete(startsWith){
 						})
 						let setCursor = EditorSelection.cursor(currentPosition)
 						view.dispatch(
-			        view.state.update({
+			        		view.state.update({
 			            // selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
-						selection: setCursor
-			        })
-			      )	
+								selection: setCursor
+			        		})
+			      		)	
 					}
 				})
 			
@@ -255,7 +260,7 @@ async function fetchAutoCompleteOrders(startsWith){
 		]
 	}
 
-	await axios.post('https://api.mi1.ai/api/autocompleteOrders', body, {headers})
+	await axios.post(apiUrl+'autocompleteOrders', body, {headers})
 		.then(function (response) {	
 			if (response.data.length > 0){
 				searchOptions = []	
@@ -320,7 +325,7 @@ async function fetchProblems(CUI){
   document.getElementById('preloader').style.display = 'inline-flex'
   document.getElementById('particles-js').style.display = 'none'
 	suggestions.innerHTML = ''
-	await axios.post('https://api.mi1.ai/api/PotentialComorbidities', cuisBody, {headers})
+	await axios.post(apiUrl+'PotentialComorbidities', cuisBody, {headers})
 		.then(function (response) {
 			if(response.data.length === 0) {
 				// suggestions.innerHTML = '<div><h3>No Data for problems:</h3></div>'	
@@ -384,7 +389,7 @@ async function fetchProblems(CUI){
 
 	document.getElementById('preloader').style.display = 'inline-flex'
 	document.getElementById('particles-js').style.display = 'none'					
-	await axios.post('https://api.mi1.ai/api/AssocOrders', bodyUI, {headers})
+	await axios.post(apiUrl+'AssocOrders', bodyUI, {headers})
 	.then(function (response) {
 		
 		if(response.data.length==0){
@@ -512,7 +517,6 @@ async function fetchProblems(CUI){
 								isCheckingOrder=true
 								check_order_for_order=true
 								lastFetchedCUI = arrCUIs[index1]['ordercui'].toString()
-								
 								fetchOrders(lastFetchedCUI)
 								}
 						}
