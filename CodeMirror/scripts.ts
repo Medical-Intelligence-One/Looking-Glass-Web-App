@@ -109,7 +109,7 @@ dataJson.push({
 })
 
 // local fhir api call to get patients data 
-axios.post(apiUrl_Dev+"PatientData", fhirBody)
+axios.post(apiUrl+"PatientData", fhirBody)
 	.then((response)=>{
 		let dob = response.data[0].DOB
 		let mrn = response.data[0].MRN
@@ -125,7 +125,7 @@ axios.post(apiUrl_Dev+"PatientData", fhirBody)
 
 // local fhir api call to get patients condition
 setTimeout(() => { 
-	axios.post(apiUrl_Dev+"PatientConditions",fhirConditionsBody,{headers})
+	axios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
 		.then((response)=>{
 			console.log(response.data)
 		})
@@ -746,7 +746,7 @@ let BinaryUrl = ""
 let getSendButton = document.getElementById('clinicalCreate')
 getSendButton.addEventListener('click', function(e){
 	let EncodedString = window.btoa(current_state.doc.toString());
-	axios.post(apiUrl_Dev+'ClinicalNote', {
+	axios.post(apiUrl+'ClinicalNote', {
 		"MI1ClientID":MI1_Client_ID,
 		"patientId":PatientId,
 		"note_type_code":"11488-4",
@@ -769,7 +769,7 @@ getSendButton.addEventListener('click', function(e){
 // Read Clinical data
 // let getReadButton = document.getElementById('clinicalRead')
 // getReadButton.addEventListener('click', function(e){
-// 	axios.post(apiUrl_Dev+'ReadClinicalNote',{
+// 	axios.post(apiUrl+'ReadClinicalNote',{
 // 		"MI1ClientID":MI1_Client_ID,
 // 		"patientId":"eXbMln3hu0PfFrpv2HgVHyg3",
 // 		'binaryId':BinaryUrl
@@ -781,7 +781,7 @@ getSendButton.addEventListener('click', function(e){
 // Read latest 5 Clinical data
 let getReadButton = document.getElementById('clinicalRead')
 getReadButton.addEventListener('click', function(e){
-	axios.post(apiUrl_Dev+'ReadClinicalNotes',{
+	axios.post(apiUrl+'ReadClinicalNotes',{
 		"MI1ClientID":MI1_Client_ID,
 		"patientId":PatientId
 	}).then(response=>{
