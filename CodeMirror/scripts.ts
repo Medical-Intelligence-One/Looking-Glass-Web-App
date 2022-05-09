@@ -88,6 +88,12 @@ const fhirBody = {
 		"PatientId": PatientId, 
 		"MI1ClientID": MI1_Client_ID
 }
+const fhirConditionsBody = {
+	"patientId": PatientId, 
+	"category": "problem-list-item",
+	"clinical_status": "active",
+	"MI1ClientID": MI1_Client_ID,
+}
 
 // get current time in epoch format
 const secondsSinceEpoch = Math.round(Date.now() / 1000)
@@ -117,23 +123,13 @@ axios.post(apiUrl_Dev+"PatientData", fhirBody)
 		fhirHTMl.innerHTML = fhirHTMl_div
 	})
 
-const fhirConditionsBody = {
-		"patientId": PatientId, 
-		"category": "problem-list-item",
-		"clinical_status": "active",
-		"MI1ClientID": MI1_Client_ID,
-}
 // local fhir api call to get patients condition
-axios.post(apiUrl_Dev+"PatientConditions",fhirConditionsBody)
-	.then((response)=>{
-		console.log(response.data)
-		// console.log(response.data)
-		// for(var i = 0; i < response.data.Conditions.length; i++){
-			// if(response.data.length>0) alert("Code: "+response.data[0].Code+"\n"+"Text: "+response.data[0].Text)
-			// else alert("No Condition data")
-			// console.log(JSON.stringify(response.data))
-		// }
-	})
+setTimeout(() => { 
+	axios.post(apiUrl_Dev+"PatientConditions",fhirConditionsBody,{headers})
+		.then((response)=>{
+			console.log(response.data)
+		})
+	}, 5000);
 
 // Completion list function
 // This function determines when should the autocomplete process begin
@@ -744,6 +740,55 @@ function bindProblemsSuggestions(){
 	}
 
 }
+
+// Send data to create clinical note apiUrl
+let BinaryUrl = ""
+let getSendButton = document.getElementById('clinicalCreate')
+getSendButton.addEventListener('click', function(e){
+	let EncodedString = window.btoa(current_state.doc.toString());
+	axios.post(apiUrl_Dev+'ClinicalNote', {
+		"MI1ClientID":MI1_Client_ID,
+		"patientId":PatientId,
+		"note_type_code":"11488-4",
+		"note_content":EncodedString
+	}).then(response=>{
+		if (parseInt(response.data[0].StatusCode)== 201){
+			BinaryUrl = response.data[0].BinaryUrl
+			alert("Note Created")
+		}
+		else{
+			console.log('Error while processing create Clinical Note ')
+			console.log('PatientId: '+PatientId )
+			console.log('Response Status Code : '+response.data[0].StatusCode)
+			alert('Error while creating note')
+			
+		}
+	})
+})
+
+// Read Clinical data
+// let getReadButton = document.getElementById('clinicalRead')
+// getReadButton.addEventListener('click', function(e){
+// 	axios.post(apiUrl_Dev+'ReadClinicalNote',{
+// 		"MI1ClientID":MI1_Client_ID,
+// 		"patientId":"eXbMln3hu0PfFrpv2HgVHyg3",
+// 		'binaryId':BinaryUrl
+// 	}).then(response=>{
+// 		console.log(response.data);
+// 	})
+// })
+
+// Read latest 5 Clinical data
+let getReadButton = document.getElementById('clinicalRead')
+getReadButton.addEventListener('click', function(e){
+	axios.post(apiUrl_Dev+'ReadClinicalNotes',{
+		"MI1ClientID":MI1_Client_ID,
+		"patientId":PatientId
+	}).then(response=>{
+		console.log(response.data);
+	})
+})
+
 
 // This function checks if the document contains problems or orders
 // By comparing them to the list of CUIs we collect and save in memory
