@@ -769,7 +769,7 @@ getSendButton.addEventListener('click', function(e){
 // Read Clinical data
 // let getReadButton = document.getElementById('clinicalRead')
 // getReadButton.addEventListener('click', function(e){
-// 	axios.post(apiUrl+'ReadClinicalNote',{
+// 	axios.post(apiUrl+'ClinicalNoteRead',{
 // 		"MI1ClientID":MI1_Client_ID,
 // 		"patientId":"eXbMln3hu0PfFrpv2HgVHyg3",
 // 		'binaryId':BinaryUrl
@@ -781,7 +781,7 @@ getSendButton.addEventListener('click', function(e){
 // Read latest 5 Clinical data
 let getReadButton = document.getElementById('clinicalRead')
 getReadButton.addEventListener('click', function(e){
-	axios.post(apiUrl+'ReadClinicalNotes',{
+	axios.post(apiUrl+'ClinicalNotesRead',{
 		"MI1ClientID":MI1_Client_ID,
 		"patientId":PatientId
 	}).then(response=>{
