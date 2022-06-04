@@ -1,4 +1,8 @@
 /CodeMirror/.cache
 /CodeMirror/.parcel-cache
 /CodeMirror/dist
+/CodeMirror/node_modules
+patient_problems_25Feb2022.csv
+patient_problems_25Feb2022.json
+CodeMirror.zip
 .gitignore

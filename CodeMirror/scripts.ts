@@ -10,7 +10,8 @@ import {indentUnit} from '@codemirror/language'
 
 import axios from 'axios';
 const headers = { 
-	'Access-Control-Allow-Origin': '*'
+	'Access-Control-Allow-Origin': '*',
+	"Access-Control-Allow-Methods":"DELETE, POST, GET, OPTIONS"
 }
 
 // Initialization
@@ -35,7 +36,12 @@ var lastFetchedCUI = ''
 var isCheckingOrder = false
 var suggestions = document.getElementById('suggestions-content')
 
+// for Cerner clinical write testing only 
+var encounterReference = '97954261'
+var practitionerReference = '12743472'
 // Theme Customization
+
+
 
 let myTheme = EditorView.theme({
   "cm-editor": {
@@ -50,13 +56,13 @@ let myTheme = EditorView.theme({
   	fontSize: "24px"
   },
   ".cm-activeLine": {
-  	backgroundColor: "initial"
+  	backgroundColor: "initial",
   },
   ".cm-gutters": {
-    display: "none"
+    display: "none",
   },
   ".cm-tooltip.cm-tooltip-cursor": {
-    display: "none"
+   display: "none"
   },
   ".cm-scroller": {
     minHeight: "600px"
@@ -88,12 +94,18 @@ const fhirBody = {
 		"PatientId": PatientId, 
 		"MI1ClientID": MI1_Client_ID
 }
+
+const fhirConditionReadBody = {
+	"patientId": PatientId, 
+	"MI1ClientID": MI1_Client_ID
+}
 const fhirConditionsBody = {
 	"patientId": PatientId, 
 	"category": "problem-list-item",
 	"clinical_status": "active",
 	"MI1ClientID": MI1_Client_ID,
 }
+
 
 // get current time in epoch format
 const secondsSinceEpoch = Math.round(Date.now() / 1000)
@@ -124,12 +136,18 @@ axios.post(apiUrl+"PatientData", fhirBody)
 	})
 
 // local fhir api call to get patients condition
-setTimeout(() => { 
-	axios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
-		.then((response)=>{
-			console.log(response.data)
-		})
-	}, 5000);
+// setTimeout(() => { 
+// 	a	console.log(response.data)
+// 		})xios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
+// 		.then((response)=>{
+		
+// 	}, 5000);
+
+// axios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
+// 		.then((response)=>{
+// 			console.log(response.data)
+// 		})
+
 
 // Completion list function
 // This function determines when should the autocomplete process begin
@@ -449,9 +467,11 @@ async function fetchProblems(CUI){
         currentLineTo = line.to
 		current_line = line.number
 		current_state = state
-        let text = line.number + ":" + (range.head - line.from)
+       	let text = line.number + ":" + (range.head - line.from) 
+	   	let SearchOptionsCount = "#" + searchOptions.length
+		let debugtext = [text, SearchOptionsCount]
         currentRowText = line.text // Gets the text of the current row
-        currentPosition = range.head // Gets the head position
+        currentPosition = range.head // Gets the 	head position
 
 				
 		// Check for line changes
@@ -463,7 +483,7 @@ async function fetchProblems(CUI){
 			isLineChangeNum = currentLineFrom
 		}
 
-        
+        // remove the length condition to call API cotinuously: (currentRowText.length == 3) && AND currentRowText.length ==4 &&
         if( (currentRowText.length == 3) && currentRowText[0] != '' && currentRowText[0] != '\t'){
 			orderOnClick=false
 					fetchAutoComplete(currentRowText)
@@ -471,7 +491,9 @@ async function fetchProblems(CUI){
 		if(currentRowText.length ==4 && currentRowText[0]=='\t'){
 			orderOnClick=false
 				fetchAutoCompleteOrders(currentRowText.trim())
-		}	
+		}
+
+
 		
 		    let index = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g,'').replace('\t','') === currentRowText.toLowerCase().replace(/\s/g,''))
 			// console.log(currentRowText, index)	
@@ -549,7 +571,7 @@ async function fetchProblems(CUI){
 			create: () => {
 			  let dom = document.createElement("div")
 			  dom.className = "cm-tooltip-cursor"
-			  dom.textContent = text
+			  dom.textContent = debugtext.toString()
 			  return {dom}
 			}
 		  }
@@ -741,17 +763,34 @@ function bindProblemsSuggestions(){
 
 }
 
+
 // Send data to create clinical note apiUrl
 let BinaryUrl = ""
 let getSendButton = document.getElementById('clinicalCreate')
 getSendButton.addEventListener('click', function(e){
+	let clinicalNoteBody = {}
 	let EncodedString = window.btoa(current_state.doc.toString());
-	axios.post(apiUrl+'ClinicalNote', {
-		"MI1ClientID":MI1_Client_ID,
-		"patientId":PatientId,
-		"note_type_code":"11488-4",
-		"note_content":EncodedString
-	}).then(response=>{
+	if(MI1_Client_ID == '123456789'){
+		clinicalNoteBody = {
+			"MI1ClientID":MI1_Client_ID,
+			"patientId":PatientId,
+			"note_type_code":"11488-4",
+			"note_content":EncodedString
+		}
+	}
+	else{
+		clinicalNoteBody = {
+			"MI1ClientID":MI1_Client_ID,
+			"patientId":PatientId,
+			"practitionerReference":"12743472",
+			"encounterReference":"97954261",
+			"note_content":EncodedString
+		}
+	}
+	
+	axios.post(apiUrl+'ClinicalNote', clinicalNoteBody).then(response=>{
+		
+		console.log(response)
 		if (parseInt(response.data[0].StatusCode)== 201){
 			BinaryUrl = response.data[0].BinaryUrl
 			alert("Note Created")
@@ -781,7 +820,7 @@ getSendButton.addEventListener('click', function(e){
 // Read latest 5 Clinical data
 let getReadButton = document.getElementById('clinicalRead')
 getReadButton.addEventListener('click', function(e){
-	axios.post(apiUrl+'ClinicalNotesRead',{
+	axios.post(apiUrl+'ReadClinicalNotes',{
 		"MI1ClientID":MI1_Client_ID,
 		"patientId":PatientId
 	}).then(response=>{
