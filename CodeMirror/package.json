@@ -20,5 +20,6 @@
         "@codemirror/basic-setup": "^0.19.1",
         "axios": "^0.26.0",
         "particles.js": "^2.0.0"
+
     }
 }
