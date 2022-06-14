@@ -818,15 +818,29 @@ getSendButton.addEventListener('click', function(e){
 // })
 
 // Read latest 5 Clinical data
+
 let getReadButton = document.getElementById('clinicalRead')
+let returnData = []
+let clinicalreadresponsedata = ''
 getReadButton.addEventListener('click', function(e){
-	axios.post(apiUrl+'ReadClinicalNotes',{
-		"MI1ClientID":MI1_Client_ID,
-		"patientId":PatientId
-	}).then(response=>{
-		console.log(response.data);
-	})
-})
+        axios.post(apiUrl+'ReadClinicalNotes',{
+                "MI1ClientID":MI1_Client_ID,
+                "patientId":PatientId
+        }).then(response=>{
+                
+                returnData = []
+                console.log(response.data);
+                returnData = response.data
+                if(returnData['returnData'].length > 0){
+                clinicalreadresponsedata = atob(returnData['returnData'][0]['DecodedData']);
+                returnData = null
+                view.dispatch({
+                        changes: {from: currentLineFrom, to: currentLineTo, insert: clinicalreadresponsedata}
+                });
+                }
+                
+        })
+        })
 
 
 // This function checks if the document contains problems or orders
