@@ -832,7 +832,7 @@ getReadButton.addEventListener('click', function(e){
                 console.log(response.data);
                 returnData = response.data
                 if(returnData['returnData'].length > 0){
-                clinicalreadresponsedata = atob(returnData['returnData'][0]['DecodedData']);
+                clinicalreadresponsedata = atob(returnData['returnData'][0]['EncodedData']);
                 returnData = null
                 view.dispatch({
                         changes: {from: currentLineFrom, to: currentLineTo, insert: clinicalreadresponsedata}
