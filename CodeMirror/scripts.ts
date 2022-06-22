@@ -1,24 +1,29 @@
 // All necessary imports
 
 import { basicSetup, EditorState, EditorView } from '@codemirror/basic-setup';
-import { keymap, lineWrapping } from "@codemirror/view"
+import { keymap } from "@codemirror/view"
 import { indentWithTab } from "@codemirror/commands"
 import { autocompletion, CompletionContext } from "@codemirror/autocomplete"
 import { StateField, EditorSelection } from "@codemirror/state"
 import { Tooltip, showTooltip } from "@codemirror/tooltip"
 import { indentUnit } from '@codemirror/language'
 
-const axios = require('axios')
+import axios from 'axios';
 const headers = {
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS"
 }
 
 // Initialization
 
+const apiUrl = 'https://api.mi1.ai/api/'
+const apiUrl_Dev = 'http://127.0.0.1:5000/'
+var dataJson = []
 var isLineChanged = false;
 var isLineChangeNum = 1;
 var check_order_for_order = false
 let parent_problem
+let orderOnClick = false
 let current_state: EditorState
 let current_line = 1
 var currentPosition = 0
@@ -30,47 +35,16 @@ var searchOptions = []
 var lastFetchedCUI = ''
 var isCheckingOrder = false
 var suggestions = document.getElementById('suggestions-content')
+
+// for Cerner clinical write testing only 
+var encounterReference = '97954261'
+var practitionerReference = '12743472'
+
+//to prevent calling APIs unnecessarily
 var lastAjaxCall = {
     endpoint: '',
     cui: ''
 };
-
-
-// Theme Customization
-
-// let myTheme = EditorView.theme({
-//   "cm-editor": {
-//     fontSize: "24px",
-//     width: "100%",
-//     minHeight: "600px",
-//     outline: 0,
-//     border: 0,
-//     fontFamily: 'Poppins'
-//   },
-//   ".cm-content": {
-//   	fontSize: "24px"
-//   },
-//   ".cm-activeLine": {
-//   	backgroundColor: "initial"
-//   },
-//   ".cm-gutters": {
-//     display: "none"
-//   },
-//   ".cm-scroller": {
-//     minHeight: "600px"
-//   },
-//   ".cm-tooltip.cm-tooltip-autocomplete > ul > li": {
-//   	lineHeight: 1.8
-//   },
-//   ".cm-tooltip": {
-//   	fontSize: "24px",
-//   	fontFamily: 'Poppins'
-//   },
-//   ".cm-lineWrapping": {
-//       // wordBreak: "break-all",
-//   }
-// }, {dark: false})
-
 
 let myTheme = EditorView.theme({
     ".cm-editor": {
@@ -103,6 +77,74 @@ let myTheme = EditorView.theme({
         fontFamily: 'Rubik Light, Open Sans'
     }
 }, { dark: false })
+
+// get patient id and mi1 id from url 
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+let PatientId = urlParams.get('Patientid')
+let MI1_Client_ID = urlParams.get('MI1ClientID')
+
+
+// generate id 
+// let MI1_Client_ID = 123456789
+// let PatientId = "eq081-VQEgP8drUUqCWzHfw3"
+const fhirBody = {
+    "PatientId": PatientId,
+    "MI1ClientID": MI1_Client_ID
+}
+
+const fhirConditionReadBody = {
+    "patientId": PatientId,
+    "MI1ClientID": MI1_Client_ID
+}
+const fhirConditionsBody = {
+    "patientId": PatientId,
+    "category": "problem-list-item",
+    "clinical_status": "active",
+    "MI1ClientID": MI1_Client_ID,
+}
+
+
+// get current time in epoch format
+const secondsSinceEpoch = Math.round(Date.now() / 1000)
+
+// get current data in dd/mm/yy format
+// let dateObject = new Date()
+// let currentDate = dateObject.getDate()+"/"+(dateObject.getMonth()+1)+"/"+dateObject.getFullYear()
+
+dataJson.push({
+    "PatientId": PatientId,
+    "Order-Date": secondsSinceEpoch,
+    "Problems": []
+})
+
+// local fhir api call to get patients data 
+axios.post(apiUrl + "PatientData", fhirBody)
+    .then((response) => {
+        let dob = response.data[0].DOB
+        let mrn = response.data[0].MRN
+        let name = response.data[0].Name
+        let fhirHTMl = document.getElementById("fhir")
+        var fhirHTMl_div = ''
+        fhirHTMl_div += '<div class="fhir-header"><h4>'
+        fhirHTMl_div += 'Patient Name : ' + name + '</h4>'
+        fhirHTMl_div += '<h4> Medical Record Number (MRN): ' + mrn + '</h4>'
+        fhirHTMl_div += '<h4> Date Of Birth : ' + dob + '</h4>'
+        fhirHTMl.innerHTML = fhirHTMl_div
+    })
+
+// local fhir api call to get patients condition
+// setTimeout(() => {
+// 	a	console.log(response.data)
+// 		})xios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
+// 		.then((response)=>{
+
+// 	}, 5000);
+
+// axios.post(apiUrl+"PatientConditions",fhirConditionsBody,{headers})
+// 		.then((response)=>{
+// 			console.log(response.data)
+// 		})
 
 // Completion list function
 // This function determines when should the autocomplete process begin
@@ -162,7 +204,7 @@ async function fetchAutoComplete(startsWith) {
             ]
     }
 
-    await axios.post('https://api.mi1.ai/api/autocompleteProblems', body, { headers })
+    await axios.post(apiUrl + 'autocompleteProblems', body, { headers })
         .then(function (response) {
 
             if (response.data.length > 0) {
@@ -178,6 +220,18 @@ async function fetchAutoComplete(startsWith) {
                     info: info,
                     label: label,
                     apply: () => {
+                        let test = dataJson[0].Problems.filter(item => {
+                            if (item.ProblemText == label) {
+                                return item
+                            }
+                        })
+                        if (test.length == 0) {
+                            dataJson[0].Problems.push({
+                                "ProblemText": label,
+                                "ProblemCUI": info,
+                                "Orders": [],
+                            })
+                        }
                         arrCUIs.push({
                             type: 'problem',
                             cui: info,
@@ -186,9 +240,11 @@ async function fetchAutoComplete(startsWith) {
                         view.dispatch({
                             changes: { from: currentLineFrom, to: currentLineTo, insert: label }
                         })
+                        let setCursor = EditorSelection.cursor(currentPosition)
                         view.dispatch(
                             view.state.update({
-                                selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+                                // selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+                                selection: setCursor
                             })
                         )
                     }
@@ -212,7 +268,7 @@ async function fetchAutoCompleteOrders(startsWith) {
             ]
     }
 
-    await axios.post('https://api.mi1.ai/api/autocompleteOrders', body, { headers })
+    await axios.post(apiUrl + 'autocompleteOrders', body, { headers })
         .then(function (response) {
             if (response.data.length > 0) {
                 searchOptions = []
@@ -227,6 +283,14 @@ async function fetchAutoCompleteOrders(startsWith) {
                     info: info,
                     label: label,
                     apply: () => {
+                        dataJson[0].Problems.filter(i => {
+                            if (i.ProblemText == parent_problem) {
+                                i.Orders.push({
+                                    "OrderCUI": info,
+                                    "OrderText": label,
+                                })
+                            }
+                        })
                         arrCUIs.push({
                             type: 'order',
                             ordercui: info,
@@ -235,10 +299,13 @@ async function fetchAutoCompleteOrders(startsWith) {
                         view.dispatch({
                             changes: { from: currentLineFrom, to: currentLineTo, insert: "\t" + label }
                         })
+
                         let contentLength = currentLineFrom + label.length + 1
+                        let setCursor = EditorSelection.cursor(contentLength)
                         view.dispatch(
                             view.state.update({
-                                selection: new EditorSelection([EditorSelection.cursor(contentLength)], 0)
+                                // selection: new EditorSelection([EditorSelection.cursor(contentLength)], 0)
+                                selection: setCursor
                             })
                         )
                     }
@@ -270,7 +337,7 @@ async function fetchProblems(CUI) {
     //   document.getElementById('preloader').style.display = 'inline-flex'
     //   document.getElementById('particles-js').style.display = 'none'
     suggestions.innerHTML = ''
-    await axios.post('https://api.mi1.ai/api/PotentialComorbidities', cuisBody, { headers })
+    await axios.post(apiUrl + 'PotentialComorbidities', cuisBody, { headers })
         .then(function (response) {
             if (response.data.length === 0) {
                 // suggestions.innerHTML = '<div><h3>No Data for problems:</h3></div>'	
@@ -406,6 +473,8 @@ function getCursorTooltips(state: EditorState) {
             current_line = line.number
             current_state = state
             let text = line.number + ":" + (range.head - line.from)
+            let SearchOptionsCount = "#" + searchOptions.length
+            let debugtext = [text, SearchOptionsCount]
             currentRowText = line.text // Gets the text of the current row
             currentPosition = range.head // Gets the head position
 
@@ -417,12 +486,14 @@ function getCursorTooltips(state: EditorState) {
                 isLineChangeNum = currentLineFrom
             }
 
-
+            // remove the length condition to call API cotinuously: (currentRowText.length == 3) && AND currentRowText.length ==4 &&
             if ((currentRowText.length == 3) && currentRowText[0] != '' && currentRowText[0] != '\t') {
+                orderOnClick = false
                 fetchAutoComplete(currentRowText)
             }
             if (currentRowText.length == 4 && currentRowText[0] == '\t') {
-                fetchAutoCompleteOrders(currentRowText.trimStart())
+                orderOnClick = false
+                fetchAutoCompleteOrders(currentRowText.trim())
             }
 
             let index = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === currentRowText.toLowerCase().replace(/\s/g, ''))
@@ -432,6 +503,7 @@ function getCursorTooltips(state: EditorState) {
 
 
                 if (arrCUIs[index]['type'] == 'problem') {
+                    orderOnClick = false
                     lastFetchedCUI = arrCUIs[index]['cui'].toString()
                     isCheckingOrder = false
 
@@ -450,7 +522,7 @@ function getCursorTooltips(state: EditorState) {
                 let previousLine = ""
                 for (; temp_line > 1;) {
                     temp_line--
-                    if (state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trimStart().length) {
+                    if (state.doc.line(temp_line).text.length == state.doc.line(temp_line).text.trim().length) {
                         previousLine = state.doc.line(temp_line).text
                         parent_problem = previousLine
                         break
@@ -494,10 +566,20 @@ function getCursorTooltips(state: EditorState) {
 
             highlightSuggestions()
 
+            return {
+                pos: range.head,
+                above: true,
+                strictSide: true,
+                arrow: true,
+                create: () => {
+                    let dom = document.createElement("div")
+                    dom.className = "cm-tooltip-cursor"
+                    dom.textContent = debugtext.toString()
+                    return { dom }
+                }
+            }
         })
-
 }
-
 
 // Initialization of the state
 // All necessary extensions added to it
@@ -547,7 +629,15 @@ function bindOrderSuggestions() {
     for (var i = 0; i <= all_suggestions.length - 1; i++) {
 
         var elem = all_suggestions[i]
-        elem.onclick = function (e) {
+        elem.addEventListener('click', function (e) {
+            dataJson[0].Problems.filter(i => {
+                if (i.ProblemText == this.getAttribute('parent-problem')) {
+                    i.Orders.push({
+                        "OrderCUI": this.getAttribute('data-cui'),
+                        "OrderText": this.getAttribute('data-name'),
+                    })
+                }
+            })
             arrCUIs.push({
                 type: this.getAttribute('data-type'),
                 ordercui: this.getAttribute('data-cui'),
@@ -559,16 +649,21 @@ function bindOrderSuggestions() {
                 content += '\t'
                 content += this.getAttribute('data-name')
                 content += '\n'
-                view.dispatch({
-                    changes: { from: currentLineFrom, to: currentLineTo, insert: content }
-                })
+                view.dispatch(
+                    view.state.update({
+                        changes: { from: currentLineFrom, to: currentLineTo, insert: content }
+                    })
+                )
                 currentPosition = currentLineFrom + content.length
+                let setCursor = EditorSelection.cursor(currentPosition)
                 view.focus()
                 view.dispatch(
                     view.state.update({
-                        selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+                        // selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
+                        selection: setCursor
                     })
                 )
+
             }
             else if (currentRowText.startsWith('\t') && index1 === -1) {
                 content += '\t'
@@ -607,11 +702,11 @@ function bindOrderSuggestions() {
             view.focus()
 
             highlightSuggestions()
-        }
-
+        })
     }
-
 }
+
+
 
 // This function handles the behavior of clicking a problem
 // from the sidebar
@@ -623,7 +718,20 @@ function bindProblemsSuggestions() {
     for (var i = 0; i <= all_suggestions.length - 1; i++) {
 
         var elem = all_suggestions[i]
-        elem.onclick = function (e) {
+        elem.addEventListener('click', function (e) {
+
+            let test = dataJson[0].Problems.filter(item => {
+                if (item.ProblemText == this.getAttribute('data-name')) {
+                    return item
+                }
+            })
+            if (test.length == 0) {
+                dataJson[0].Problems.push({
+                    "ProblemText": this.getAttribute('data-name'),
+                    "ProblemCUI": this.getAttribute('data-cui'),
+                    "Orders": [],
+                })
+            }
             arrCUIs.push({
                 type: this.getAttribute('data-type'),
                 cui: this.getAttribute('data-cui'),
@@ -637,11 +745,89 @@ function bindProblemsSuggestions() {
             })
             view.focus()
             highlightSuggestions()
-        }
+        })
 
     }
-
 }
+
+// Send data to create clinical note apiUrl
+let BinaryUrl = ""
+let getSendButton = document.getElementById('clinicalCreate')
+getSendButton.addEventListener('click', function (e) {
+    let clinicalNoteBody = {}
+    let EncodedString = window.btoa(current_state.doc.toString());
+    if (MI1_Client_ID == '123456789') {
+        clinicalNoteBody = {
+            "MI1ClientID": MI1_Client_ID,
+            "patientId": PatientId,
+            "note_type_code": "11488-4",
+            "note_content": EncodedString
+        }
+    }
+    else {
+        clinicalNoteBody = {
+            "MI1ClientID": MI1_Client_ID,
+            "patientId": PatientId,
+            "practitionerReference": "12743472",
+            "encounterReference": "97954261",
+            "note_content": EncodedString
+        }
+    }
+
+    axios.post(apiUrl + 'ClinicalNote', clinicalNoteBody).then(response => {
+
+        console.log(response)
+        if (parseInt(response.data[0].StatusCode) == 201) {
+            BinaryUrl = response.data[0].BinaryUrl
+            alert("Note Created")
+        }
+        else {
+            console.log('Error while processing create Clinical Note ')
+            console.log('PatientId: ' + PatientId)
+            console.log('Response Status Code : ' + response.data[0].StatusCode)
+            alert('Error while creating note')
+
+        }
+    })
+})
+
+// Read Clinical data
+// let getReadButton = document.getElementById('clinicalRead')
+// getReadButton.addEventListener('click', function(e){
+// 	axios.post(apiUrl+'ClinicalNoteRead',{
+// 		"MI1ClientID":MI1_Client_ID,
+// 		"patientId":"eXbMln3hu0PfFrpv2HgVHyg3",
+// 		'binaryId':BinaryUrl
+// 	}).then(response=>{
+// 		console.log(response.data);
+// 	})
+// })
+
+// Read latest 5 Clinical data
+
+let getReadButton = document.getElementById('clinicalRead')
+let returnData = []
+let clinicalreadresponsedata = ''
+getReadButton.addEventListener('click', function (e) {
+    axios.post(apiUrl + 'ReadClinicalNotes', {
+        "MI1ClientID": MI1_Client_ID,
+        "patientId": PatientId
+    }).then(response => {
+
+        returnData = []
+        console.log(response.data);
+        returnData = response.data
+        if (returnData['returnData'].length > 0) {
+            clinicalreadresponsedata = atob(returnData['returnData'][0]['EncodedData']);
+            returnData = null
+            view.dispatch({
+                changes: { from: currentLineFrom, to: currentLineTo, insert: clinicalreadresponsedata }
+            });
+        }
+
+    })
+})
+
 
 // This function checks if the document contains problems or orders
 // By comparing them to the list of CUIs we collect and save in memory
@@ -657,7 +843,7 @@ function highlightSuggestions() {
         if (index !== -1) {
             if (arrCUIs[index]['type'] == elem.getAttribute('data-type')) {
 
-                view ? view.viewState.state.doc.text.forEach((e) {
+                view ? view.state.doc.toJSON().forEach((e) => {
                     (e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
                 }) : null
 
@@ -667,7 +853,7 @@ function highlightSuggestions() {
         if (index1 !== -1) {
             if (arrCUIs[index1]['type'] == elem.getAttribute('data-type')) {
 
-                view ? view.viewState.state.doc.text.forEach((e) {
+                view ? view.state.doc.toJSON().forEach((e) => {
                     (e.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') == elem.getAttribute('data-name').toLowerCase().replace(/\s/g, '')) ? elem.classList.add('highlighted') : null
                 }) : null
 

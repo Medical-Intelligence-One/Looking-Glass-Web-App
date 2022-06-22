@@ -27,69 +27,79 @@
         </div>
     </header>
     <div class="col-12 page-title h2">Clinical Co-pilot Prototype</div>
+    <div id="parentFhir" class="container">
+        <div id="fhir">
+            <h4>Patient Name:</h4>
+            <h4>Medical Record Number (MRN):</h4>
+            <h4>Date Of Birth :</h4>
+        </div>
+        <!-- <button id="jsondata">Get Json Data</button> -->
+    </div>
     <div class="code-mirror-app">
         <div class="code-mirror-wrapper">
             <div class="col-8">
                 <div class="page-title h3 section-header">Assessment and Plan</div>
                 <div id="editor-container" class="editor-container">
                     <div class="editor" id="editor"></div>
+                    <button id="clinicalCreate" style="margin-top:10px">Send Clinical Note</button>
+                    <button id="clinicalRead" style="margin-top:10px">Read Clinical Note</button>
                 </div>
             </div>
-            <div class="col-4">
-                <!-- Tabs section for problems-->
-                <div id="problem_tab" class="tab section-header" style="display:block">
-                    <div class="d-flex">
-                        <button class="tablinks far-left" onclick="openTab(event, 'Experts')">Experts</button>
-                        <button class="tablinks" onclick="openTab(event, 'Associated_Conditions')"
-                            id="defaultOpen">Associated Conditions</button>
-                        <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Diagnosis')">Alternative
-                            Diagnosis</button>
-                    </div>
-                </div>
-
-                <!-- Tab section for orders-->
-                <div id="orders_tab" class="tab section-header" style="display:none">
-                    <div class="d-flex">
-                        <button id="defaultOpenForOrders" class="tablinks far-left"
-                            onclick="openTab(event, 'Associated_Orders')">Associated Orders</button>
-                        <button class="tablinks" onclick="openTab(event, 'Order_Editor')">Order Editor</button>
-                        <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Orders')">Alternative
-                            Orders</button>
-                    </div>
-                </div>
-                <!-- Our Suggestions comes over here -->
-                <div id="suggestions" class="suggestions-container">
-                    <div class="suggestions">
-                        <div id="preloader" class="preloader" style="display: none;"><img src="assets/preloader.gif" />
-                        </div>
-                        <!-- Content for Problems -->
-                        <div id="Experts" class="tabcontent">
-                        </div>
-
-                        <div id="Associated_Conditions" class="tabcontent">
-                            <div id="associated-conditions-suggestions-content" class="suggestions"
-                                style="display: none;">
-                            </div>
-                        </div>
-
-                        <div id="Alternative_Diagnosis" class="tabcontent">
-                        </div>
-
-                        <!-- Content for Orders -->
-                        <div id="Associated_Orders" class="tabcontent">
-                        </div>
-
-                        <div id="Order_Editor" class="tabcontent">
-                        </div>
-
-                        <div id="Alternative_Orders" class="tabcontent">
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
         </div>
+        <div class="col-4">
+            <!-- Tabs section for problems-->
+            <div id="problem_tab" class="tab section-header" style="display:block">
+                <div class="d-flex">
+                    <button class="tablinks far-left" onclick="openTab(event, 'Experts')">Experts</button>
+                    <button class="tablinks" onclick="openTab(event, 'Associated_Conditions')"
+                        id="defaultOpen">Associated Conditions</button>
+                    <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Diagnosis')">Alternative
+                        Diagnosis</button>
+                </div>
+            </div>
+
+            <!-- Tab section for orders-->
+            <div id="orders_tab" class="tab section-header" style="display:none">
+                <div class="d-flex">
+                    <button id="defaultOpenForOrders" class="tablinks far-left"
+                        onclick="openTab(event, 'Associated_Orders')">Associated Orders</button>
+                    <button class="tablinks" onclick="openTab(event, 'Order_Editor')">Order Editor</button>
+                    <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Orders')">Alternative
+                        Orders</button>
+                </div>
+            </div>
+            <!-- Our Suggestions comes over here -->
+            <div id="suggestions" class="suggestions-container">
+                <div class="suggestions">
+                    <div id="preloader" class="preloader" style="display: none;"><img src="assets/preloader.gif" />
+                    </div>
+                    <!-- Content for Problems -->
+                    <div id="Experts" class="tabcontent">
+                    </div>
+
+                    <div id="Associated_Conditions" class="tabcontent">
+                        <div id="suggestions-content" class="suggestions" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div id="Alternative_Diagnosis" class="tabcontent">
+                    </div>
+
+                    <!-- Content for Orders -->
+                    <div id="Associated_Orders" class="tabcontent">
+                    </div>
+
+                    <div id="Order_Editor" class="tabcontent">
+                    </div>
+
+                    <div id="Alternative_Orders" class="tabcontent">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     </div>
 
