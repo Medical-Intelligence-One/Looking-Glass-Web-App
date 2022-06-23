@@ -33,8 +33,9 @@ var currentLineTo = 0
 var arrCUIs = []
 var searchOptions = []
 var lastFetchedCUI = ''
+var activeTerm = ''
 var isCheckingOrder = false
-var suggestions = document.getElementById('suggestions-content')
+// var suggestions = $('suggestions-content')
 
 // for Cerner clinical write testing only 
 var encounterReference = '97954261'
@@ -124,13 +125,13 @@ axios.post(apiUrl + "PatientData", fhirBody)
         let dob = response.data[0].DOB
         let mrn = response.data[0].MRN
         let name = response.data[0].Name
-        let fhirHTMl = document.getElementById("fhir")
+        let fhirHTMl = $("#fhir")
         var fhirHTMl_div = ''
         fhirHTMl_div += '<div class="fhir-header"><h4>'
         fhirHTMl_div += 'Patient Name : ' + name + '</h4>'
         fhirHTMl_div += '<h4> Medical Record Number (MRN): ' + mrn + '</h4>'
         fhirHTMl_div += '<h4> Date Of Birth : ' + dob + '</h4>'
-        fhirHTMl.innerHTML = fhirHTMl_div
+        fhirHTMl.html(fhirHTMl_div)
     })
 
 // local fhir api call to get patients condition
@@ -333,30 +334,30 @@ async function fetchProblems(CUI) {
 
     lastAjaxCall.endpoint = 'PotentialComorbidities'
     lastAjaxCall.cui = CUI
-
+    var $assocConditions = $('#associated-conditions')
     //   document.getElementById('preloader').style.display = 'inline-flex'
     //   document.getElementById('particles-js').style.display = 'none'
-    suggestions.innerHTML = ''
+    $assocConditions.html('')
     await axios.post(apiUrl + 'PotentialComorbidities', cuisBody, { headers })
         .then(function (response) {
+            $('#preloader').css('display', 'none');
             if (response.data.length === 0) {
                 // suggestions.innerHTML = '<div><h3>No Data for problems:</h3></div>'	
-                document.getElementById("defaultOpen").click();
-                document.getElementById("problem_tab").style.display = 'block';
-                document.getElementById("suggestions-content").style.display = 'none';
-                document.getElementById("orders_tab").style.display = 'none';
-                document.getElementById('preloader').style.display = 'none'
+                $("#defaultOpen").click();
+                $("#problem_tab").css('display', 'block');
+                $assocConditions.css('display', 'none');
+                $("#orders_tab").css('display', 'none');
                 // document.getElementById('particles-js').style.display = 'block'
             }
             else {
-                suggestions.innerHTML = ''
+                $assocConditions.html('')
                 if (response.data.length > 0) {
                     // document.getElementById('particles-js').style.display = 'none'
-                    document.getElementById("suggestions-content").style.display = 'block';
-                    document.getElementById("defaultOpen").click();
-                    document.getElementById("problem_tab").style.display = 'block';
-                    document.getElementById("orders_tab").style.display = 'none';
-                    suggestions.innerHTML += '<div><h4>Associated Conditions</h4></div>'
+                    $assocConditions.css('display', 'block');
+                    $("#defaultOpen").click();
+                    $("#problem_tab").css('display', 'block');
+                    $("#orders_tab").css('display', 'none');;
+                    // $assocConditions.html('<div><h4>Associated Conditions</h4></div>')
                 }
                 var suggestion_str = ''
                 for (var i = 0; i <= response.data.length - 1; i++) {
@@ -367,14 +368,13 @@ async function fetchProblems(CUI) {
                     // suggestion_str += "<span class='col-2'></span>"
                     suggestion_str += "</div>"
                 }
-                suggestions.innerHTML += suggestion_str
-                document.getElementById('preloader').style.display = 'none'
+                $assocConditions.append(suggestion_str)
             }
 
         }).catch(function (error) {
 
-            document.getElementById('preloader').style.display = 'none'
-            suggestions.innerHTML = ''
+            $('#preloader').css('display', 'none');
+            $assocConditions.html('')
             lastFetchedCUI = ''
             isCheckingOrder = false
 
@@ -389,8 +389,8 @@ async function fetchProblems(CUI) {
 
 // Fetch order results from the API
 async function fetchOrders(CUI) {
-
-    suggestions.innerHTML = ''
+    var $assocOrders = $('#associated-orders')
+    $assocOrders.html('')
 
     var bodyUI = {
         "CUIs":
@@ -404,29 +404,29 @@ async function fetchOrders(CUI) {
     lastAjaxCall.endpoint = 'AssocOrders'
     lastAjaxCall.cui = CUI
 
-    document.getElementById('preloader').style.display = 'inline-flex'
+    $('#preloader').css('display', 'inline-flex')
     // document.getElementById('particles-js').style.display = 'none'					
-    await axios.post('https://api.mi1.ai/api/AssocOrders', bodyUI, { headers })
+    await axios.post(apiUrl + 'AssocOrders', bodyUI, { headers })
         .then(function (response) {
 
+            $('#preloader').css('display', 'none')
             if (response.data.length == 0) {
                 // document.getElementById('particles-js').style.display = 'block'
                 // suggestions.innerHTML = '<div><h3>No Data for orders:</h3></div>'
-                document.getElementById("suggestions-content").style.display = 'none';
-                document.getElementById("problem_tab").style.display = 'none';
-                document.getElementById("orders_tab").style.display = 'block';
-                document.getElementById("defaultOpenForOrders").click();
-                document.getElementById('preloader').style.display = 'none'
+                $assocOrders.css('display', 'none');
+                $("#problem_tab").css('display', 'none');
+                $("#orders_tab").css('display', 'block');
+                $("#defaultOpenForOrders").trigger('click');
             }
             else {
-                suggestions.innerHTML = ''
+                $assocOrders.html('')
                 if (response.data.length > 0) {
-                    if (check_order_for_order == true) { suggestions.innerHTML += '<div><h4>Orders Associated with Orders</h4></div>' }
-                    else { suggestions.innerHTML += '<div><h4>Orders Associated with Problems</h4></div>' }
-                    document.getElementById("problem_tab").style.display = 'none';
-                    document.getElementById("orders_tab").style.display = 'block';
-                    document.getElementById("suggestions-content").style.display = 'block';
-                    document.getElementById("defaultOpenForOrders").click();
+                    if (check_order_for_order == true) { $('#Associated_Orders h4').html('<div><h4>Orders Associated with Orders</h4></div>') }
+                    else { $('#Associated_Orders h4').html('<div><h4>Orders Associated with Problems</h4></div>') }
+                    $("#problem_tab").css('display', 'none');
+                    $("#orders_tab").css('display', 'block');
+                    $assocOrders.css('display', 'block');
+                    $("#defaultOpenForOrders").trigger('click');
                     // document.getElementById('particles-js').style.display = 'none'
                 }
                 var suggestion_str = ''
@@ -438,14 +438,13 @@ async function fetchOrders(CUI) {
                     suggestion_str += "<span class='tag col-2'>" + response.data[i].Type + "</span>"
                     suggestion_str += "</div>"
                 }
-                suggestions.innerHTML += suggestion_str
-                document.getElementById('preloader').style.display = 'none'
+                $assocOrders.append(suggestion_str)
             }
 
         }).catch(function (error) {
 
-            document.getElementById('preloader').style.display = 'none'
-            suggestions.innerHTML = ''
+            $('#preloader').css('display', 'none')
+            $assocOrders.html('')
             lastFetchedCUI = ''
             isCheckingOrder = false
 
@@ -505,6 +504,7 @@ function getCursorTooltips(state: EditorState) {
                 if (arrCUIs[index]['type'] == 'problem') {
                     orderOnClick = false
                     lastFetchedCUI = arrCUIs[index]['cui'].toString()
+                    activeTerm = arrCUIs[index]['name'].toString()
                     isCheckingOrder = false
 
                     if (!(lastAjaxCall.cui == lastFetchedCUI && lastAjaxCall.endpoint == 'PotentialComorbidities')) { fetchProblems(lastFetchedCUI) }
@@ -512,6 +512,7 @@ function getCursorTooltips(state: EditorState) {
 
                     check_order_for_order = true
                     lastFetchedCUI = arrCUIs[index]['ordercui'].toString()
+                    activeTerm = arrCUIs[index]['name'].toString()
                     isCheckingOrder = true
                     if (!(lastAjaxCall.cui == lastFetchedCUI && lastAjaxCall.endpoint == 'AssocOrders')) { fetchOrders(lastFetchedCUI) }
                 }
@@ -556,9 +557,9 @@ function getCursorTooltips(state: EditorState) {
             }
 
             if (line.number == 1 && state.doc.line(line.number).text == '') {
-                suggestions.innerHTML = ''
-                // document.getElementById("problem_tab").style.display = "none"
-                // document.getElementById("particles-js").style.display = "block"
+                $('#associated-conditions').html('')
+                // $("#problem_tab").style.display = "none"
+                // $("#particles-js").style.display = "block"
                 lastFetchedCUI = ''
                 isCheckingOrder = false
             }
@@ -607,17 +608,32 @@ const view = new EditorView({
 
 // Focuses on the view on page load to let physicians type immediately
 
-window.onload = function () {
+$(function (e) {
     view.focus()
     particlesJS.load('particles-js', 'particlesjs.json', function (e) { console.log('particles loaded') })
-}
 
-// Resets the position back to the view
-// When someone clicks the title of the block that contains the editor
 
-document.getElementById('editor-container').onclick = function () {
-    view.focus()
-}
+    // Resets the position back to the view
+    // When someone clicks the title of the block that contains the editor
+
+    $('#editor-container').on('click', function () {
+        view.focus()
+    })
+
+    $('#dashboard i').on('mouseenter', function (e) {
+        updateContent(this, 'mouseenter')
+    })
+
+    $('#dashboard i').on('mouseleave', function (e) {
+
+        updateContent(this, 'mouseleave')
+    });
+
+    $('#dashboard i').on('click', function (e) {
+        updateContent(this, 'click')
+    });
+
+})
 
 // This function handles the behavior of clicking an order
 // from the sidebar
@@ -697,7 +713,7 @@ function bindOrderSuggestions() {
                     changes: { from: final_line.to, insert: content }
                 })
             }
-            document.getElementById('suggestions-content').innerHTML = ''
+            $('#associated-orders').html()
 
             view.focus()
 
@@ -860,6 +876,55 @@ function highlightSuggestions() {
             }
         }
 
+    }
+}
+
+function updateContent(obj, action) {
+    console.log(activeTerm)
+    var btnName = '';
+    var title = '';
+    if (!$(this).hasClass('active')) {
+        switch (action) {
+            case 'mouseenter':
+                btnName = $(obj).attr('id').replace('fa-', '')
+                break;
+            case 'mouseleave':
+                btnName = $('#dashboard i.active').attr('id').replace('fa-', '')
+                break;
+            case 'click':
+                btnName = $(obj).attr('id').replace('fa-', '')
+                $('#dashboard i').removeClass('active');
+                $(obj).addClass('active');
+                break;
+        }
+        $('.tabcontent').css('display', 'none');
+        $('#' + btnName).css('display', 'block');
+        if (activeTerm == '') {
+            $('#content-title').text((btnName.replace('_', ' ')))
+        }
+        else {
+            switch (btnName) {
+                case 'Experts':
+                    title = 'Experts on ' + activeTerm
+                    break
+                case 'Associated_Conditions':
+                    title = 'Conditions Associated with ' + activeTerm
+                    break
+                case 'Alternative_Diagnosis':
+                    title = 'Alternative Diagnoses for' + activeTerm
+                    break
+                case 'Associated_Orders':
+                    title = 'Orders Associated with ' + activeTerm
+                    break
+                case 'Alternative_Orders':
+                    title = 'Alternative Orders for ' + activeTerm
+                    break
+                case 'Order_Editor':
+                    title = 'Edit Orders for ' + activeTerm
+                    break
+            }
+            $('#content-title').text((title))
+        }
     }
 
 }

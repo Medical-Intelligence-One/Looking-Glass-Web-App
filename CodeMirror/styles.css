@@ -120,6 +120,17 @@ header {
     color: white;
     text-align: left;
     padding: 30px 0 0 30px;
+    display: flex;
+}
+
+#logo {
+    /* padding: 15px; */
+    /* margin-right: auto; */
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    padding: 10px 50px 0 0;
+    /* margin: 30px 30px 30px; */
 }
 
 .code-mirror-app {
@@ -133,7 +144,7 @@ header {
 .code-mirror-wrapper {
     padding: 1em;
     width: calc(100% - 80px);
-    max-width: 1440px;
+    /* max-width: 1440px; */
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -151,7 +162,9 @@ header {
     /* width: calc(65% - 32px); */
     margin-right: 10px;
     padding: .5em;
+    /* min-height: 600px; */
     /* font-size: 20px; */
+    height: 100%;
 }
 
 .editor-container h3,
@@ -165,14 +178,16 @@ header {
     /* width: calc(35% - 32px);
     margin-left: 10px; */
     font-size: 16px;
-    border-radius: 0 0 7px 7px;
+    border-radius: 7px;
     padding: .5em;
+    /* min-height: 600px; */
+    height: 100%;
 }
+
 
 .editor,
 .suggestions {
     width: 100%;
-    min-height: 600px;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -180,10 +195,13 @@ header {
 
 .editor {
     border-radius: 7px;
+    min-height: 550px;
+    /* height: 100% */
 }
 
 .suggestions {
     border-radius: 7px;
+    min-height: 557px;
 
 }
 
@@ -209,11 +227,11 @@ header {
 }
 
 
-#suggestions-content {
+/* .suggestions {
     display: flex;
     width: 100;
     flex-direction: column;
-}
+} */
 
 .suggestions .suggestion {
     width: calc(100% - 42px);
@@ -265,7 +283,7 @@ header {
     text-align: center;
     color: white;
     width: 100%;
-    padding: .5em;
+    padding: 0 .5em .5em .5em;
     border-radius: .5em;
     margin: 0;
 }
@@ -342,11 +360,102 @@ header {
     flex-grow: 1;
 }
 
-#parentFhir {
-    padding: 10px;
-    max-width: 1440px;
-    margin-top: 10px;
-    width: calc(100% - 80px);
-    background-color: #a8dadc;
-    border-radius: 7px;
+#parentFhir table {
+    margin-left: auto;
 }
+
+#parentFhir table td {
+    padding: 0 10px;
+    /* max-width: 1000px; */
+    margin: 0 10px;
+    /* width: calc(100% - 80px); */
+    background-color: black;
+    /* border-radius: 7px; */
+    color: white;
+
+    /* border: solid 3px #03B8EA; */
+}
+
+#fhir td {
+    margin-right: 1em;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 1em;
+}
+
+#fhir #patient-name {
+    font-size: 1.2em;
+    color: #5A99E2;
+}
+
+.logistic-curve {
+    stroke: #03B8EA;
+    stroke-width: 5px;
+}
+
+#dashboard {
+    display: flex;
+    /* max-width: 200px; */
+    justify-content: space-around;
+    margin: .3em 1em .8em 1em;
+    border: 1px solid slategray;
+    border-radius: 20px;
+    background-color: lightyellow;
+    box-shadow: 0 0 14px 9px lightgray;
+}
+
+#dashboard i {
+    color: lightgrey;
+    display: block;
+    font-size: 1em;
+    border: 1px solid grey;
+    border-radius: 7px;
+    padding: .5em;
+    margin: .5em;
+    background-color: #03B8EA;
+    cursor: pointer;
+}
+
+#dashboard i:hover {
+    color: #03B8EA;
+    background-color: white;
+}
+
+#dashboard i.active {
+    color: #03B8EA;
+    background-color: white;
+}
+
+#logistic-curve-svg {
+    margin-bottom: -380px;
+}
+
+#content-title {
+    color: white;
+}
+
+#curve {
+    width: 100%;
+}
+
+#curve:before {
+    background: url("/assets/curve.svg") center bottom no-repeat;
+    content: '';
+    height: 103px;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    z-index: -1;
+    top: 116px;
+}
+
+/* #curve:before {
+    background: url("/assets/curve2.svg") center bottom no-repeat;
+    content: '';
+    height: 103px;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    z-index: -1;
+    top: 116px;
+} */
