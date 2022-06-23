@@ -201,7 +201,7 @@ header {
 
 .suggestions {
     border-radius: 7px;
-    min-height: 557px;
+    min-height: 530px;
 
 }
 
@@ -283,7 +283,7 @@ header {
     text-align: center;
     color: white;
     width: 100%;
-    padding: 0 .5em .5em .5em;
+    padding: 0 .5em;
     border-radius: .5em;
     margin: 0;
 }
@@ -446,7 +446,7 @@ header {
     width: 100%;
     left: 0px;
     z-index: -1;
-    top: 116px;
+    top: 112px;
 }
 
 /* #curve:before {

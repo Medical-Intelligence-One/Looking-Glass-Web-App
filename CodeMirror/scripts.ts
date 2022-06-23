@@ -370,7 +370,8 @@ async function fetchProblems(CUI) {
                 }
                 $assocConditions.append(suggestion_str)
             }
-
+            $('#fa-Associated_Conditions').removeClass('active')
+            updateContent($('#fa-Associated_Conditions'), 'click')
         }).catch(function (error) {
 
             $('#preloader').css('display', 'none');
@@ -440,6 +441,8 @@ async function fetchOrders(CUI) {
                 }
                 $assocOrders.append(suggestion_str)
             }
+            $('#fa-Associated_Orders').removeClass('active')
+            updateContent($('#fa-Associated_Orders'), 'click')
 
         }).catch(function (error) {
 
@@ -461,6 +464,7 @@ async function fetchOrders(CUI) {
 // Takes state as input and processes information
 
 function getCursorTooltips(state: EditorState) {
+    const titleCase = (s) => s.replace(/\b\w/g, c => c.toUpperCase())
 
     return state.selection.ranges
         .filter(range => range.empty)
@@ -504,7 +508,7 @@ function getCursorTooltips(state: EditorState) {
                 if (arrCUIs[index]['type'] == 'problem') {
                     orderOnClick = false
                     lastFetchedCUI = arrCUIs[index]['cui'].toString()
-                    activeTerm = arrCUIs[index]['name'].toString()
+                    activeTerm = titleCase(arrCUIs[index]['name'].toString())
                     isCheckingOrder = false
 
                     if (!(lastAjaxCall.cui == lastFetchedCUI && lastAjaxCall.endpoint == 'PotentialComorbidities')) { fetchProblems(lastFetchedCUI) }
@@ -512,7 +516,7 @@ function getCursorTooltips(state: EditorState) {
 
                     check_order_for_order = true
                     lastFetchedCUI = arrCUIs[index]['ordercui'].toString()
-                    activeTerm = arrCUIs[index]['name'].toString()
+                    activeTerm = titleCase(arrCUIs[index]['name'].toString())
                     isCheckingOrder = true
                     if (!(lastAjaxCall.cui == lastFetchedCUI && lastAjaxCall.endpoint == 'AssocOrders')) { fetchOrders(lastFetchedCUI) }
                 }
@@ -625,7 +629,6 @@ $(function (e) {
     })
 
     $('#dashboard i').on('mouseleave', function (e) {
-
         updateContent(this, 'mouseleave')
     });
 
@@ -633,6 +636,7 @@ $(function (e) {
         updateContent(this, 'click')
     });
 
+    updateContent($('#fa-Associated_Conditions'), 'click')
 })
 
 // This function handles the behavior of clicking an order
@@ -880,7 +884,7 @@ function highlightSuggestions() {
 }
 
 function updateContent(obj, action) {
-    console.log(activeTerm)
+
     var btnName = '';
     var title = '';
     if (!$(this).hasClass('active')) {
@@ -911,7 +915,7 @@ function updateContent(obj, action) {
                     title = 'Conditions Associated with ' + activeTerm
                     break
                 case 'Alternative_Diagnosis':
-                    title = 'Alternative Diagnoses for' + activeTerm
+                    title = 'Alternative Diagnoses for ' + activeTerm
                     break
                 case 'Associated_Orders':
                     title = 'Orders Associated with ' + activeTerm
