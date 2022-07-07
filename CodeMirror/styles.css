@@ -86,7 +86,7 @@ h3 {
     #editor-container {
         text-align: left;
         padding: .5em;
-        border-radius: 7px;
+        border-radius: 7px 0 0 7px;
     }
 
     #selected-terms {
@@ -142,9 +142,10 @@ header {
 }
 
 .code-mirror-wrapper {
-    padding: 1em;
-    width: calc(100% - 80px);
+    /* padding: 1em; */
+    /* width: calc(100% - 80px); */
     /* max-width: 1440px; */
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -154,13 +155,13 @@ header {
 .suggestions-container {
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
     /* border-radius: 7px; */
-    background-color: #03B8EA;
+    background-color: white;
     /* padding-top: 0 */
 }
 
 .editor-container {
     /* width: calc(65% - 32px); */
-    margin-right: 10px;
+    /* margin-right: 10px; */
     padding: .5em;
     /* min-height: 600px; */
     /* font-size: 20px; */
@@ -178,10 +179,12 @@ header {
     /* width: calc(35% - 32px);
     margin-left: 10px; */
     font-size: 16px;
-    border-radius: 7px;
-    padding: .5em;
+    border-radius: 0 0 7px 0;
+    padding: 0.5em;
     /* min-height: 600px; */
     height: 100%;
+    /* margin-top: -25px; */
+    min-height: 615px;
 }
 
 
@@ -190,7 +193,7 @@ header {
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: #03B8EA;
 }
 
 .editor {
@@ -201,7 +204,7 @@ header {
 
 .suggestions {
     border-radius: 7px;
-    min-height: 530px;
+    min-height: 490px;
 
 }
 
@@ -286,6 +289,10 @@ header {
     padding: 0 .5em;
     border-radius: .5em;
     margin: 0;
+}
+
+.page-title.h2 {
+    margin: 0 0 1em 0;
 }
 
 .section-header {
@@ -397,49 +404,63 @@ header {
     display: flex;
     /* max-width: 200px; */
     justify-content: space-around;
-    margin: .3em 1em .8em 1em;
-    border: 1px solid slategray;
-    border-radius: 20px;
-    background-color: lightyellow;
-    box-shadow: 0 0 14px 9px lightgray;
+    margin: .3em 1em .5em 1em;
+    margin: 0 1em;
+    /* border: 1px solid slategray;
+    border-radius: 20px; */
+    /* background-color: lightyellow; */
+    /* box-shadow: 0 0 14px 9px lightgray; */
+    background: transparent;
 }
 
 #dashboard i {
     color: lightgrey;
     display: block;
-    font-size: 1em;
-    border: 1px solid grey;
-    border-radius: 7px;
+    font-size: 1.5em;
+    /* border: 1px solid grey;
+    border-radius: 7px; */
     padding: .5em;
-    margin: .5em;
-    background-color: #03B8EA;
+    /* margin: .5em; */
+    /* background-color: #03B8EA; */
     cursor: pointer;
+    color: #03B8EA;
+}
+
+#dashboard i:before {
+    background: url(assets/Round-Button-PNG-Image.png);
+    /* font-family: initial; */
+    /* content: ""; */
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    background-position: center;
+    background-size: contain;
+    padding-top: 5px;
 }
 
 #dashboard i:hover {
-    color: #03B8EA;
-    background-color: white;
+    color: darkblue;
+    /* background-color: white; */
 }
 
 #dashboard i.active {
-    color: #03B8EA;
-    background-color: white;
+    color: darkblue;
+    font-weight: bold;
+    /* background-color: white; */
 }
 
-#logistic-curve-svg {
+/* #logistic-curve-svg {
     margin-bottom: -380px;
-}
+} */
 
 #content-title {
     color: white;
+    /* margin-top: -28px; */
+    padding: .5em;
 }
 
-#curve {
-    width: 100%;
-}
-
-#curve:before {
-    background: url("/assets/curve.svg") center bottom no-repeat;
+/* #curve:before {
+    background: url("/assets/logistic-curve.svg") center bottom no-repeat;
     content: '';
     height: 103px;
     position: absolute;
@@ -447,7 +468,7 @@ header {
     left: 0px;
     z-index: -1;
     top: 112px;
-}
+} */
 
 /* #curve:before {
     background: url("/assets/curve2.svg") center bottom no-repeat;

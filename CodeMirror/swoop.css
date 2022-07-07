@@ -1,0 +1,64 @@
+#swoop {
+    background-color: transparent;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    font-size: 0%;
+}
+
+#dashboardEdge {
+    display: flex;
+    /* background-color: brown; */
+    font-size: 0%;
+}
+
+#upperFill {
+    border-radius: 40px 0px 0px 0px;
+}
+
+.silverButton {
+    width: 20%;
+    margin-top: 10px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+
+#lowerFill {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    border-radius: 40px 0 0 0;
+}
+
+#cmDiv,
+#sidebarDiv {
+    width: 50%;
+    background-color: aqua;
+    margin: 20px;
+    margin-bottom: 20px;
+    border-radius: 40px;
+}
+
+#cmDiv {
+    border-radius: 40px 40px 40px 40px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+#sidebarDiv {
+    /* border-radius: 40px 0px 0px 40px; */
+    /* margin-right: 0%; */
+    margin-top: 0px;
+}
+
+/* #logistic-curve {
+    filter: drop-shadow(3px -5px 2px rgb(0 0 0 / 0.4));
+} */
+
+#curve {
+    margin-left: auto;
+    margin-bottom: -61px;
+    width: 50%;
+    /* display: none; */
+}

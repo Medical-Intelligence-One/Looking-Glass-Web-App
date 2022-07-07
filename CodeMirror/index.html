@@ -18,6 +18,7 @@
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="swoop.css">
 </head>
 
 <body>
@@ -49,9 +50,26 @@
             </table>
         </span>
     </header>
-    <span>
+    <div style="margin: 0 25px">
         <div class="col-12 page-title h2">Clinical Co-pilot Prototype</div>
-        <div id="curve"></div>
+        <div id="curve">
+            <svg id="logistic-curve" width="100%" viewBox="0 0 350 35">
+                <!-- Cubic Bézier curve with lines added to enclose a fillable space -->
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%" x3="0%" y3="0%">
+                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:grey;stop-opacity:1" />
+                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#grad1)" d="
+
+                                                                                        M 0,35 
+                                                                                        c 100,0 10,-35 150,-35 
+                                                                                        l 250,0 0,35" />
+            </svg>
+
+        </div>
         <div class="code-mirror-app">
             <div class="code-mirror-wrapper">
                 <div class="col-8">
@@ -67,29 +85,25 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <div id="content-title" class="page-title h3 section-header"></div>
-                    <div>
-                        <!-- <svg viewBox='0 0 200 20' preserveAspectRatio='none'>
-                        <path d='M0,750 C650,730 500,154 1024,154' fill="none" stroke="white" />
-                    </svg> -->
-                        <!-- <svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" id="logistic-curve-svg">
-
-                        <g fill="none" stroke-width="2.0" transform="translate(168.6,249.5)scale(.995,1.038)">
-                            <path stroke="#4050C0" fill="#03B8EA" d="M-132.0,93.0 L-107.8,92.4 L-94.6,92.0 L-81.4,91.3 L-68.2,90.5
-      L-55.0,89.4 L-41.8,87.9 L-28.6,85.9 L-15.4,83.2 L-2.2,79.7 L11.0,75.0 L24.2,69.0
-      C28.7,66.7 33.1,64.1 37.4,61.3 C41.9,58.3 46.3,55.0 50.6,51.5
-      C55.1,47.7 59.5,43.6 63.8,39.3 C68.3,34.6 72.7,29.7 77.0,24.4
-      C81.5,18.9 85.9,13.0 90.2,6.9
-      L103.4,-13.0 L116.6,-34.9 L129.8,-58.0 L138.6,-73.5
-      L151.8,-96.3 L165.0,-117.6 L178.2,-136.8
-      C182.5,-142.6 186.9,-148.2 191.4,-153.4 C195.7,-158.4 200.1,-163.0 204.6,-167.4
-      C208.9,-171.5 213.3,-175.3 217.8,-178.7 C222.1,-182.1 226.5,-185.1 231.0,-187.8
-      C235.3,-190.5 239.8,-192.8 244.2,-195.0
-      L257.4,-200.5 L270.6,-204.7 L283.8,-207.9 L297.0,-210.3 L310.2,-212.2 L323.4,-213.5
-      L336.6,-214.6 L349.8,-215.3 L363.0,-215.9 L374.0,-216.2 L393.8,-216.7" />
-                        </g>
-                    </svg> -->
+                    <div id="dashboard">
+                        <!-- <i class="fas fa-user-doctor"></i>
+                                                                                <i class="fas fa-bacteria"></i>
+                                                                                <i class="fas fa-briefcase-medical"></i> -->
+                        <i class="fab fa-connectdevelop active" id="fa-Associated_Conditions"></i>
+                        <i class="fas fa-book-medical" id="fa-Alternative_Orders"></i>
+                        <!-- <i class="fas fa-comment-medical"></i> -->
+                        <i class="fas fa-cubes" id="fa-Alternative_Diagnosis"></i>
+                        <!-- <i class="fas fa-dna"></i>
+                                                                                <i class="fas fa-flask"></i> -->
+                        <i class="fas fa-handshake-simple" id="fa-Experts"></i>
+                        <!-- <i class="fas fa-hand-holding-medical"></i>
+                                                                                <i class="fas fa-handshake-simple"></i> -->
+                        <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
+                        <i class="fas fa-pencil" id="fa-Order_Editor"></i>
+                        <!-- <i class="fas fa-pills"></i>
+                                                    <i class="fas fa-puzzle-piece"></i>
+                                                    <i class="fas fa-suitcase-medical"></i>
+                                                    <i class="fas fa-vial"></i> -->
                     </div>
                     <!-- Tabs section for problems-->
                     <!-- <div id="problem_tab" class="tab section-header" style="display:none">
@@ -115,28 +129,9 @@
 
                     <!-- Our Suggestions comes over here -->
                     <div id="suggestions" class="suggestions-container">
-                        <div id="dashboard">
-                            <!-- <i class="fas fa-user-doctor"></i>
-                                                        <i class="fas fa-bacteria"></i>
-                                                        <i class="fas fa-briefcase-medical"></i> -->
-                            <i class="fab fa-connectdevelop active" id="fa-Associated_Conditions"></i>
-                            <i class="fas fa-book-medical" id="fa-Alternative_Orders"></i>
-                            <!-- <i class="fas fa-comment-medical"></i> -->
-                            <i class="fas fa-cubes" id="fa-Alternative_Diagnosis"></i>
-                            <!-- <i class="fas fa-dna"></i>
-                                                        <i class="fas fa-flask"></i> -->
-                            <i class="fas fa-handshake-simple" id="fa-Experts"></i>
-                            <!-- <i class="fas fa-hand-holding-medical"></i>
-                                                        <i class="fas fa-handshake-simple"></i> -->
-                            <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
-                            <i class="fas fa-pencil" id="fa-Order_Editor"></i>
-                            <!-- <i class="fas fa-pills"></i>
-                            <i class="fas fa-puzzle-piece"></i>
-                            <i class="fas fa-suitcase-medical"></i>
-                            <i class="fas fa-vial"></i> -->
-                        </div>
 
                         <div class="suggestions">
+                            <div id="content-title" class="page-title h3 section-header"></div>
                             <div id="preloader" class="preloader" style="display: none;"><img
                                     src="assets/preloader.gif" />
                             </div>
@@ -177,36 +172,36 @@
 
         </div>
 
-        </div>
+    </div>
 
-        <div id="particles-js">
-        </div>
-        <script>
-            $(function () {
-                $('#patient-mrn').text('ABC12345')
-                $('#patient-dob').text('12-06-2015')
-                $('#patient-name').text('Bernie Timothy Clifton')
+    <div id="particles-js">
+    </div>
+    <script>
+        $(function () {
+            $('#patient-mrn').text('ABC12345')
+            $('#patient-dob').text('12-06-2015')
+            $('#patient-name').text('Bernie Timothy Clifton')
 
-            });
+        });
 
-            function openTab(evt, tabName) {
+        function openTab(evt, tabName) {
 
-                $('.tabcontent').css('display', 'none');
-                $('.tablinks').removeClass('active');
-                $('#' + tabName).css('display', 'block');
-                $(evt.currentTarget).addClass('active');
+            $('.tabcontent').css('display', 'none');
+            $('.tablinks').removeClass('active');
+            $('#' + tabName).css('display', 'block');
+            $(evt.currentTarget).addClass('active');
 
-            }
+        }
 
-            // Get the element with id="defaultOpen" and click on it
-            $("#defaultOpen").click();
-        </script>
+        // Get the element with id="defaultOpen" and click on it
+        $("#defaultOpen").click();
+    </script>
 
 
-        <script src="scripts.ts"></script>
+    <script src="scripts.ts"></script>
 
-        <!-- Import Particles.js and app.js files -->
-        <script src="/node_modules/particles.js/particles.js"></script>
+    <!-- Import Particles.js and app.js files -->
+    <script src="/node_modules/particles.js/particles.js"></script>
 </body>
 
 </html>
