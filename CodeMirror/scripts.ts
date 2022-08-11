@@ -132,7 +132,10 @@ axios.post(apiUrl + "PatientData", fhirBody)
         fhirHTMl_div += '<h4> Medical Record Number (MRN): ' + mrn + '</h4>'
         fhirHTMl_div += '<h4> Date Of Birth : ' + dob + '</h4>'
         fhirHTMl.html(fhirHTMl_div)
+    }).catch(function (error) {
+        console.log(error)
     })
+
 
 // local fhir api call to get patients condition
 // setTimeout(() => {
@@ -362,9 +365,9 @@ async function fetchProblems(CUI) {
                 var suggestion_str = ''
                 for (var i = 0; i <= response.data.length - 1; i++) {
                     suggestion_str += "<div class='row suggestion' data-type='problem' data-cui='" + response.data[i].CUI + "' data-name='" + response.data[i].Problem + "'>"
-                    suggestion_str += "<h5 class='col-12 suggestion-text'>"
+                    suggestion_str += "<h6 class='col-12 suggestion-text'>"
                     suggestion_str += response.data[i].Problem
-                    suggestion_str += "</h5>"
+                    suggestion_str += "</h6>"
                     // suggestion_str += "<span class='col-2'></span>"
                     suggestion_str += "</div>"
                 }
@@ -433,9 +436,9 @@ async function fetchOrders(CUI) {
                 var suggestion_str = ''
                 for (var i = 0; i <= response.data.length - 1; i++) {
                     suggestion_str += "<div class='row suggestion' data-type='order' data-problem-cui='" + CUI + "' data-cui='" + response.data[i].Code + "' data-name='" + response.data[i].Order + "' parent-problem='" + parent_problem + "' >"
-                    suggestion_str += "<span class='col-2'></span><h5 class='col-8 suggestion-text'>"
+                    suggestion_str += "<span class='col-2'></span><h6 class='col-8 suggestion-text'>"
                     suggestion_str += response.data[i].Order
-                    suggestion_str += "</h5>"
+                    suggestion_str += "</h6>"
                     suggestion_str += "<span class='tag col-2'>" + response.data[i].Type + "</span>"
                     suggestion_str += "</div>"
                 }
@@ -624,15 +627,15 @@ $(function (e) {
         view.focus()
     })
 
-    $('#dashboard i').on('mouseenter', function (e) {
+    $('#dashboard span').on('mouseenter', function (e) {
         updateContent(this, 'mouseenter')
     })
 
-    $('#dashboard i').on('mouseleave', function (e) {
+    $('#dashboard span').on('mouseleave', function (e) {
         updateContent(this, 'mouseleave')
     });
 
-    $('#dashboard i').on('click', function (e) {
+    $('#dashboard span').on('click', function (e) {
         updateContent(this, 'click')
     });
 
@@ -893,11 +896,11 @@ function updateContent(obj, action) {
                 btnName = $(obj).attr('id').replace('fa-', '')
                 break;
             case 'mouseleave':
-                btnName = $('#dashboard i.active').attr('id').replace('fa-', '')
+                btnName = $('#dashboard span.active').attr('id').replace('fa-', '')
                 break;
             case 'click':
                 btnName = $(obj).attr('id').replace('fa-', '')
-                $('#dashboard i').removeClass('active');
+                $('#dashboard span').removeClass('active');
                 $(obj).addClass('active');
                 break;
         }

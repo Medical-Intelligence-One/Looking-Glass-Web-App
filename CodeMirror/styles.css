@@ -79,7 +79,7 @@ h3 {
         margin-bottom: 2em;
     }
 
-    #suggestions-container {
+    /* #suggestions-container {
         padding: 1em;
     }
 
@@ -87,7 +87,7 @@ h3 {
         text-align: left;
         padding: .5em;
         border-radius: 7px 0 0 7px;
-    }
+    } */
 
     #selected-terms {
         background-color: rgba(0, 0, 0, .7);
@@ -113,6 +113,7 @@ body {
     text-align: -webkit-center;
     background-color: black;
     font-family: 'Rubik Light', 'Open Sans';
+    width: 99%;
 }
 
 header {
@@ -157,15 +158,10 @@ header {
     /* border-radius: 7px; */
     background-color: white;
     /* padding-top: 0 */
-}
-
-.editor-container {
-    /* width: calc(65% - 32px); */
-    /* margin-right: 10px; */
-    padding: .5em;
-    /* min-height: 600px; */
-    /* font-size: 20px; */
-    height: 100%;
+    width: 100%;
+    font-size: 16px;
+    padding: 0 0 .5em 1em;
+    background-color: transparent;
 }
 
 .editor-container h3,
@@ -175,36 +171,24 @@ header {
     margin: 1em 0em;
 }
 
-.suggestions-container {
-    /* width: calc(35% - 32px);
-    margin-left: 10px; */
-    font-size: 16px;
-    border-radius: 0 0 7px 0;
-    padding: 0.5em;
-    /* min-height: 600px; */
-    height: 100%;
-    /* margin-top: -25px; */
-    min-height: 615px;
-}
-
-
 .editor,
 .suggestions {
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #03B8EA;
+    background-color: white;
+    min-height: 550px;
+    border-radius: 7px;
 }
 
-.editor {
+/* .editor {
     border-radius: 7px;
     min-height: 550px;
-    /* height: 100% */
-}
+} */
 
 .suggestions {
     border-radius: 7px;
-    min-height: 490px;
+
 
 }
 
@@ -226,7 +210,8 @@ header {
 }
 
 .ͼo .cm-activeLine {
-    background-color: #ffff0066;
+    background-color: #03B8EA;
+    /* opacity: .5; */
 }
 
 
@@ -240,26 +225,27 @@ header {
     width: calc(100% - 42px);
     padding: 10px;
     margin: 10px;
-    color: white;
-    background-color: #5A99E2;
+    color: black;
+    /* background-color: grey; */
     border-radius: 7px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    border: 1px solid #03B8EA;
     cursor: pointer;
 }
 
-.suggestions .suggestion h5 {
-    font-size: 13px;
+.suggestions .suggestion h6 {
+    /* font-size: 13px; */
     margin: 2px 0;
     font-weight: 300;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 .suggestions .suggestion:hover {
-    border: 1px solid rgba(0, 0, 0, 0.7);
+    /* border: 1px solid rgba(0, 0, 0, 0.7); */
+    text-decoration: underline;
 }
 
 .suggestions .suggestion.highlighted {
-    background-color: #223039;
+    background-color: #5A99E2;
+    border-color: #5A99E2;
     color: #FFF;
 }
 
@@ -296,21 +282,19 @@ header {
 }
 
 .section-header {
-    height: 60px;
+    height: 2em;
+    /* padding-top: 1em; */
 }
 
 #problem_tab {
     /* margin: 0 .5em; */
 }
 
-.tab {
+/* .tab {
     overflow: hidden;
-    /* border: 1px solid #03B8EA; */
-    /* border-radius: 7px 7px 0 0; */
-    /* border: 1px solid rgb(0, 0, 0); */
     background-color: black;
     color: black;
-}
+} */
 
 .tab button ::before {
     border: 0.5px solid;
@@ -328,8 +312,6 @@ header {
     transition: 0.3s;
     font-size: 17px;
     height: 60px;
-    /* padding: 0.22em 0em; */
-    /* height: 3em; */
 }
 
 /* Change background color of buttons on hover */
@@ -357,15 +339,11 @@ header {
 }
 
 /* Style the tab content */
-.tabcontent {
-    height: 100%;
+/* .tabcontent {
     display: none;
-    /* padding: 6px 12px; */
-    /* border: 1px solid black;
-    border-top: none;
-    border-radius: 0 0 7px 7px; */
+    min-height: 490px;
     flex-grow: 1;
-}
+} */
 
 #parentFhir table {
     margin-left: auto;
@@ -402,15 +380,11 @@ header {
 
 #dashboard {
     display: flex;
-    /* max-width: 200px; */
     justify-content: space-around;
-    margin: .3em 1em .5em 1em;
-    margin: 0 1em;
-    /* border: 1px solid slategray;
-    border-radius: 20px; */
-    /* background-color: lightyellow; */
-    /* box-shadow: 0 0 14px 9px lightgray; */
+    /* margin: .3em 1em .5em 1em; */
+    /* margin: 0 1em; */
     background: transparent;
+    padding: 0 0.5em;
 }
 
 #dashboard i {
@@ -419,27 +393,27 @@ header {
     font-size: 1.5em;
     /* border: 1px solid grey;
     border-radius: 7px; */
-    padding: .5em;
+    /* padding: .25em; */
     /* margin: .5em; */
     /* background-color: #03B8EA; */
     cursor: pointer;
-    color: #03B8EA;
+    color: grey;
 }
 
 #dashboard i:before {
     background: url(assets/Round-Button-PNG-Image.png);
     /* font-family: initial; */
     /* content: ""; */
-    width: 1.5em;
-    height: 1.5em;
+    width: 2em;
+    height: 2em;
     display: inline-block;
     background-position: center;
     background-size: contain;
-    padding-top: 5px;
+    padding-top: .5em;
 }
 
 #dashboard i:hover {
-    color: darkblue;
+    color: #03B8EA;
     /* background-color: white; */
 }
 
@@ -447,10 +421,63 @@ header {
     color: darkblue;
     font-weight: bold;
     /* background-color: white; */
+    background: radial-gradient(circle closest-side, black, transparent);
 }
+
+.tab:hover:not(.active) {
+    cursor: pointer;
+    color: white;
+    /* color: #03B8EA; */
+    /* background-color: white; */
+}
+
 
 /* #logistic-curve-svg {
     margin-bottom: -380px;
+} */
+
+.tab {
+    width: 100%;
+    height: 3em;
+    border-radius: 7px 7px 0 0;
+    background-color: #03B8EA;
+    border: solid 1px white;
+    border-bottom: 0px;
+    /* opacity: .8; */
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab.active {
+    /* border-width: 5px; */
+    background-color: white;
+    /* color: #03B8EA; */
+}
+
+/* .tab.red {
+    background-color: red;
+}
+
+.tab.orange {
+    background-color: orange;
+}
+
+.tab.yellow {
+    background-color: yellow;
+}
+
+.tab.green {
+    background-color: green;
+}
+
+.tab.blue {
+    background-color: blue;
+}
+
+.tab.indigo {
+    background-color: indigo;
 } */
 
 #content-title {
@@ -480,3 +507,10 @@ header {
     z-index: -1;
     top: 116px;
 } */
+
+.clinical-buttons {
+    background: darkgrey;
+    opacity: .8;
+    text-align: center;
+    padding: 1em 0;
+}
