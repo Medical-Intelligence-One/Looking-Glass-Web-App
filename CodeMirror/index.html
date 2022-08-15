@@ -86,13 +86,16 @@
             </div>
         </div> -->
     <div class="row">
-        <div class="col-8 text-start">
-            <div class="page-title h3 section-header">Assessment and Plan</div>
+        <div id="clinical-notes" class="col-8 text-start ms-1">
+            <div class="tab-collection">
+                <span class="tab active">Assessment and Plan</span>
+            </div>
+            <!-- <div class="page-title h3 section-header">Assessment and Plan</div> -->
             <div class="code-mirror-app">
                 <div class="code-mirror-wrapper">
-                    <div id="editor-container" class="editor-container">
-                        <div class="editor" id="editor"></div>
-                    </div>
+                    <!-- <div id="editor-container" class="editor-container"> -->
+                    <div class="editor editor-container" id="editor"></div>
+                    <!-- </div> -->
                 </div>
             </div>
             <div class="mt-4 fixed-bottom clinical-buttons">
@@ -148,13 +151,13 @@
                                             <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
                                             <i class="fas fa-pencil" id="fa-Order_Editor"></i> -->
 
-            <div id="dashboard">
-                <span class="tab red" id="fa-Associated_Conditions">Associated Conditions</span>
-                <span class="tab orange" id="fa-Alternative_Orders">Alternative Orders</span>
-                <span class="tab yellow" id="fa-Alternative_Diagnosis">Alternative Diagnoses</span>
-                <span class="tab green" id="fa-Experts">Experts</span>
-                <span class="tab blue" id="fa-Associated_Orders">Associated Orders</span>
-                <span class="tab indigo" id="fa-Order_Editor">Order Editor</span>
+            <div id="clinical-context" class="tab-collection">
+                <span class="tab" id="tab-Associated_Conditions">Associated Conditions</span>
+                <span class="tab" id="tab-Alternative_Orders">Alternative Orders</span>
+                <span class="tab" id="tab-Alternative_Diagnosis">Alternative Diagnoses</span>
+                <span class="tab" id="tab-Experts">Experts</span>
+                <span class="tab" id="tab-Associated_Orders">Associated Orders</span>
+                <span class="tab" id="tab-Order_Editor">Order Editor</span>
             </div>
             <div id="suggestions" class="suggestions-container suggestions">
                 <div id="content-title" class="page-title h4 section-header"></div>
@@ -167,8 +170,8 @@
 
                 <div id="Associated_Conditions" class="tabcontent">
                     <!-- <h4>Associated Conditions</h4> -->
-                    <div id="associated-conditions">
-                    </div>
+                    <!-- <div id="associated-conditions">
+                    </div> -->
                 </div>
 
                 <div id="Alternative_Diagnosis" class="tabcontent">
@@ -178,8 +181,8 @@
                 <!-- Content for Orders -->
                 <div id="Associated_Orders" class="tabcontent">
                     <!-- <h4>Associated Orders</h4> -->
-                    <div id="associated-orders">
-                    </div>
+                    <!-- <div id="associated-orders">
+                    </div> -->
                 </div>
 
                 <div id="Order_Editor" class="tabcontent">

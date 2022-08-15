@@ -152,17 +152,6 @@ header {
     align-items: flex-start;
 }
 
-.editor-container,
-.suggestions-container {
-    /* border: 1px solid rgba(0, 0, 0, 0.3); */
-    /* border-radius: 7px; */
-    background-color: white;
-    /* padding-top: 0 */
-    width: 100%;
-    font-size: 16px;
-    padding: 0 0 .5em 1em;
-    background-color: transparent;
-}
 
 .editor-container h3,
 .suggestions h4 {
@@ -177,8 +166,12 @@ header {
     display: flex;
     flex-direction: column;
     background-color: white;
-    min-height: 550px;
+    height: 66vh;
     border-radius: 7px;
+    overflow-y: auto;
+    padding: .5em 1em;
+    border: 2px solid grey;
+    /* background-color: transparent; */
 }
 
 /* .editor {
@@ -186,10 +179,8 @@ header {
     min-height: 550px;
 } */
 
-.suggestions {
-    border-radius: 7px;
-
-
+#clinical-notes {
+    margin: 0 1em;
 }
 
 .cm-editor {
@@ -198,6 +189,10 @@ header {
     outline: 0;
     border: 0;
     font-family: 'Rubik Light, Open Sans'
+}
+
+.cm-editor.cm-focused {
+    outline: 0 !important;
 }
 
 /* 
@@ -221,46 +216,43 @@ header {
     flex-direction: column;
 } */
 
-.suggestions .suggestion {
-    width: calc(100% - 42px);
+.suggestion {
+    width: 100%;
     padding: 10px;
     margin: 10px;
     color: black;
     /* background-color: grey; */
     border-radius: 7px;
     border: 1px solid #03B8EA;
-    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
 }
 
-.suggestions .suggestion h6 {
-    /* font-size: 13px; */
-    margin: 2px 0;
-    font-weight: 300;
-}
-
-.suggestions .suggestion:hover {
-    /* border: 1px solid rgba(0, 0, 0, 0.7); */
-    text-decoration: underline;
-}
-
-.suggestions .suggestion.highlighted {
+.suggestion.highlighted {
     background-color: #5A99E2;
     border-color: #5A99E2;
     color: #FFF;
 }
 
-.suggestions .suggestion .tag {
+.suggestion .order-type {
     display: inline-flex;
-    font-size: 12px;
-    font-weight: 300;
-    background-color: #e63946;
-    padding: 4px 10px;
-    border-radius: 7px;
+    font-size: 14px;
+    padding: .25em;
     text-align: center;
     justify-content: center;
+    color: #03B8EA;
+    /* border: 2px solid #03B8EA; */
 }
 
-.suggestions .preloader {
+.suggestion.highlighted .order-type {
+    color: white
+}
+
+.suggestion span {
+    min-width: 10%
+}
+
+.preloader {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -268,21 +260,23 @@ header {
     /* min-height: 600px; */
 }
 
+.suggestion-text:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .page-title {
     text-align: center;
     color: white;
     width: 100%;
-    padding: 0 .5em;
+    padding-bottom: 0 .5em;
     border-radius: .5em;
-    margin: 0;
-}
-
-.page-title.h2 {
-    margin: 0 0 1em 0;
+    margin-bottom: .5em;
 }
 
 .section-header {
     height: 2em;
+
     /* padding-top: 1em; */
 }
 
@@ -378,50 +372,18 @@ header {
     stroke-width: 5px;
 }
 
-#dashboard {
+.tab-collection {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     /* margin: .3em 1em .5em 1em; */
     /* margin: 0 1em; */
     background: transparent;
     padding: 0 0.5em;
 }
 
-#dashboard i {
-    color: lightgrey;
-    display: block;
-    font-size: 1.5em;
-    /* border: 1px solid grey;
-    border-radius: 7px; */
-    /* padding: .25em; */
-    /* margin: .5em; */
-    /* background-color: #03B8EA; */
-    cursor: pointer;
-    color: grey;
-}
-
-#dashboard i:before {
-    background: url(assets/Round-Button-PNG-Image.png);
-    /* font-family: initial; */
-    /* content: ""; */
-    width: 2em;
-    height: 2em;
-    display: inline-block;
-    background-position: center;
-    background-size: contain;
-    padding-top: .5em;
-}
-
-#dashboard i:hover {
-    color: #03B8EA;
-    /* background-color: white; */
-}
-
-#dashboard i.active {
-    color: darkblue;
-    font-weight: bold;
-    /* background-color: white; */
-    background: radial-gradient(circle closest-side, black, transparent);
+#clinical-notes .tab {
+    width: 16.66%;
+    z-index: 1;
 }
 
 .tab:hover:not(.active) {
@@ -439,49 +401,34 @@ header {
 .tab {
     width: 100%;
     height: 3em;
+    border: 2px solid grey;
+    border-width: 2px 1px 2px 1px;
     border-radius: 7px 7px 0 0;
     background-color: #03B8EA;
-    border: solid 1px white;
-    border-bottom: 0px;
+    /* border-bottom: 0px; */
     /* opacity: .8; */
     padding: 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: -2px;
 }
 
 .tab.active {
-    /* border-width: 5px; */
     background-color: white;
-    /* color: #03B8EA; */
+    border-bottom: 0;
 }
 
-/* .tab.red {
-    background-color: red;
+.tab:first-child {
+    border-left-width: 2px;
 }
 
-.tab.orange {
-    background-color: orange;
+.tab:last-child {
+    border-right-width: 2px;
 }
-
-.tab.yellow {
-    background-color: yellow;
-}
-
-.tab.green {
-    background-color: green;
-}
-
-.tab.blue {
-    background-color: blue;
-}
-
-.tab.indigo {
-    background-color: indigo;
-} */
 
 #content-title {
-    color: white;
+    color: black;
     /* margin-top: -28px; */
     padding: .5em;
 }
@@ -513,4 +460,5 @@ header {
     opacity: .8;
     text-align: center;
     padding: 1em 0;
+    margin: 0 .5em;
 }

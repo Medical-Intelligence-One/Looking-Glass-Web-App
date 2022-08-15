@@ -19,7 +19,7 @@
 <body>
     <style>/* Style particle js */
         /* #particles-js{ height: 600px; width: 100%;background-color: red; } */</style>
-    <header class="d-flex ">
+    <header class="d-flex sticky-top">
         <span id="logo" class="">
             <a href="https://www.mi1.ai/">
                 <img src="/Original on Transparent.8718f5d0.png" height="60px" alt="Medical Intelligence One home page">
@@ -42,63 +42,66 @@
             </table>
         </span>
     </header>
-    <div style="margin: 0 25px">
-        <div class="col-12 page-title h2">Clinical Co-pilot Prototype</div>
-        <div id="curve">
+    <!-- <div> -->
+    <div class="col-12 page-title h2">Clinical Co-pilot Prototype</div>
+    <!-- Cubic Bézier curve with lines added to enclose a fillable space -->
+    <!-- <div id="curve">
             <svg id="logistic-curve" width="100%" viewBox="0 0 350 35">
-                <!-- Cubic Bézier curve with lines added to enclose a fillable space -->
                 <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%" x3="0%" y3="0%">
-                        <stop offset="0%" style="stop-color:white;stop-opacity:1"></stop>
-                        <stop offset="100%" style="stop-color:grey;stop-opacity:1"></stop>
-                        <stop offset="0%" style="stop-color:white;stop-opacity:1"></stop>
+                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:grey;stop-opacity:1" />
+                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
                     </linearGradient>
                 </defs>
                 <path fill="url(#grad1)" d="
 
                                                                                         M 0,35 
                                                                                         c 100,0 10,-35 150,-35 
-                                                                                        l 250,0 0,35"></path>
+                                                                                        l 250,0 0,35" />
             </svg>
 
-        </div>
-        <div class="code-mirror-app">
-            <div class="code-mirror-wrapper">
-                <div class="col-8">
-                    <div class="page-title h3 section-header">Assessment and Plan</div>
-                    <div id="editor-container" class="editor-container">
-                        <div class="editor" id="editor"></div>
-                        <button type="button" class="btn btn-primary" id="clinicalCreate" style="margin-top:10px">Send
-                            Clinical
-                            Note</button>
-                        <button type="button" class="btn btn-primary" id="clinicalRead" style="margin-top:10px">Read
-                            Clinical
-                            Note</button>
-                    </div>
+        </div> -->
+    <!-- <div class="row">
+            <div class="col-8 text-start">
+                <div class="page-title h3 section-header">Assessment and Plan</div>
+            </div>
+            <div class="col-4">
+                <div id="dashboard">
+                    <span class="tab red" id="fa-Associated_Conditions">Associated Conditions</span>
+                    <span class="tab orange" id="fa-Alternative_Orders">Alternative Orders</span>
+                    <span class="tab yellow" id="fa-Alternative_Diagnosis">Alternative Diagnoses</span>
+                    <span class="tab green" id="fa-Experts">Experts</span>
+                    <span class="tab blue" id="fa-Associated_Orders">Associated Orders</span>
+                    <span class="tab indigo" id="fa-Order_Editor">Order Editor</span>
                 </div>
-                <div class="col-4">
-                    <div id="dashboard">
-                        <!-- <i class="fas fa-user-doctor"></i>
-                                                                                <i class="fas fa-bacteria"></i>
-                                                                                <i class="fas fa-briefcase-medical"></i> -->
-                        <i class="fab fa-connectdevelop active" id="fa-Associated_Conditions"></i>
-                        <i class="fas fa-book-medical" id="fa-Alternative_Orders"></i>
-                        <!-- <i class="fas fa-comment-medical"></i> -->
-                        <i class="fas fa-cubes" id="fa-Alternative_Diagnosis"></i>
-                        <!-- <i class="fas fa-dna"></i>
-                                                                                <i class="fas fa-flask"></i> -->
-                        <i class="fas fa-handshake-simple" id="fa-Experts"></i>
-                        <!-- <i class="fas fa-hand-holding-medical"></i>
-                                                                                <i class="fas fa-handshake-simple"></i> -->
-                        <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
-                        <i class="fas fa-pencil" id="fa-Order_Editor"></i>
-                        <!-- <i class="fas fa-pills"></i>
-                                                    <i class="fas fa-puzzle-piece"></i>
-                                                    <i class="fas fa-suitcase-medical"></i>
-                                                    <i class="fas fa-vial"></i> -->
-                    </div>
-                    <!-- Tabs section for problems-->
-                    <!-- <div id="problem_tab" class="tab section-header" style="display:none">
+            </div>
+        </div> -->
+    <div class="row">
+        <div id="clinical-notes" class="col-8 text-start ms-1">
+            <div class="tab-collection">
+                <span class="tab active">Assessment and Plan</span>
+            </div>
+            <!-- <div class="page-title h3 section-header">Assessment and Plan</div> -->
+            <div class="code-mirror-app">
+                <div class="code-mirror-wrapper">
+                    <!-- <div id="editor-container" class="editor-container"> -->
+                    <div class="editor editor-container" id="editor"></div>
+                    <!-- </div> -->
+                </div>
+            </div>
+            <div class="mt-4 fixed-bottom clinical-buttons">
+                <button type="button" class="btn btn-primary ms-2 me-2" id="clinicalCreate">Send
+                    Clinical
+                    Note</button>
+                <button type="button" class="btn btn-primary" id="clinicalRead">Read
+                    Clinical
+                    Note</button>
+            </div>
+        </div>
+        <div class="col-4 position-fixed end-0">
+            <!-- Tabs section for problems-->
+            <!-- <div id="problem_tab" class="tab section-header" style="display:none">
                     <div class="d-flex">
                         <button class="tablinks far-left" onclick="openTab(event, 'Experts')">Experts</button>
                         <button class="tablinks" onclick="openTab(event, 'Associated_Conditions')"
@@ -108,8 +111,8 @@
                     </div>
                 </div> -->
 
-                    <!-- Tab section for orders-->
-                    <!-- <div id="orders_tab" class="tab section-header" style="display:none">
+            <!-- Tab section for orders-->
+            <!-- <div id="orders_tab" class="tab section-header" style="display:none">
                     <div class="d-flex">
                         <button id="defaultOpenForOrders" class="tablinks far-left"
                             onclick="openTab(event, 'Associated_Orders')">Associated Orders</button>
@@ -119,51 +122,73 @@
                     </div>
                 </div> -->
 
-                    <!-- Our Suggestions comes over here -->
-                    <div id="suggestions" class="suggestions-container">
+            <!-- Our Suggestions comes over here -->
+            <!-- <i class="fas fa-user-doctor"></i>
+                                            <i class="fas fa-bacteria"></i>
+                                            <i class="fas fa-briefcase-medical"></i>
+                                            <i class="fas fa-comment-medical"></i>
+                                            <i class="fas fa-dna"></i>
+                                            <i class="fas fa-flask"></i> 
+                                            <i class="fas fa-hand-holding-medical"></i>
+                                            <i class="fas fa-handshake-simple"></i>
+                                            <i class="fas fa-pills"></i>
+                                            <i class="fas fa-puzzle-piece"></i>
+                                            <i class="fas fa-suitcase-medical"></i>
+                                            <i class="fas fa-vial"></i> -->
 
-                        <div class="suggestions">
-                            <div id="content-title" class="page-title h3 section-header"></div>
-                            <div id="preloader" class="preloader" style="display: none;"><img src="/preloader.28cbcf6e.gif">
-                            </div>
-                            <!-- Content for Problems -->
-                            <div id="Experts" class="tabcontent">
-                                <!-- <h4>Experts</h4> -->
-                            </div>
+            <!-- <i class="fab fa-connectdevelop active" id="fa-Associated_Conditions"></i>
+                                            <i class="fas fa-book-medical" id="fa-Alternative_Orders"></i>
+                                            <i class="fas fa-cubes" id="fa-Alternative_Diagnosis"></i>
+                                            <i class="fas fa-handshake-simple" id="fa-Experts"></i>
+                                            <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
+                                            <i class="fas fa-pencil" id="fa-Order_Editor"></i> -->
 
-                            <div id="Associated_Conditions" class="tabcontent">
-                                <!-- <h4>Associated Conditions</h4> -->
-                                <div id="associated-conditions" class="suggestions">
-                                </div>
-                            </div>
-
-                            <div id="Alternative_Diagnosis" class="tabcontent">
-                                <!-- <h4>Alternative Diagnosis</h4> -->
-                            </div>
-
-                            <!-- Content for Orders -->
-                            <div id="Associated_Orders" class="tabcontent">
-                                <!-- <h4>Associated Orders</h4> -->
-                                <div id="associated-orders" class="suggestions">
-                                </div>
-                            </div>
-
-                            <div id="Order_Editor" class="tabcontent">
-                                <!-- <h4>Order Editor</h4> -->
-                            </div>
-
-                            <div id="Alternative_Orders" class="tabcontent">
-                                <!-- <h4>Alternative Orders</h4> -->
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+            <div id="clinical-context" class="tab-collection">
+                <span class="tab" id="tab-Associated_Conditions">Associated Conditions</span>
+                <span class="tab" id="tab-Alternative_Orders">Alternative Orders</span>
+                <span class="tab" id="tab-Alternative_Diagnosis">Alternative Diagnoses</span>
+                <span class="tab" id="tab-Experts">Experts</span>
+                <span class="tab" id="tab-Associated_Orders">Associated Orders</span>
+                <span class="tab" id="tab-Order_Editor">Order Editor</span>
             </div>
+            <div id="suggestions" class="suggestions-container suggestions">
+                <div id="content-title" class="page-title h4 section-header"></div>
+                <div id="preloader" class="preloader" style="display: none;"><img src="/preloader.28cbcf6e.gif">
+                </div>
+                <!-- Content for Problems -->
+                <div id="Experts" class="tabcontent">
+                    <!-- <h4>Experts</h4> -->
+                </div>
 
+                <div id="Associated_Conditions" class="tabcontent">
+                    <!-- <h4>Associated Conditions</h4> -->
+                    <!-- <div id="associated-conditions">
+                    </div> -->
+                </div>
+
+                <div id="Alternative_Diagnosis" class="tabcontent">
+                    <!-- <h4>Alternative Diagnosis</h4> -->
+                </div>
+
+                <!-- Content for Orders -->
+                <div id="Associated_Orders" class="tabcontent">
+                    <!-- <h4>Associated Orders</h4> -->
+                    <!-- <div id="associated-orders">
+                    </div> -->
+                </div>
+
+                <div id="Order_Editor" class="tabcontent">
+                    <!-- <h4>Order Editor</h4> -->
+                </div>
+
+                <div id="Alternative_Orders" class="tabcontent">
+                    <!-- <h4>Alternative Orders</h4> -->
+                </div>
+
+            </div>
         </div>
-
     </div>
+    <!-- </div> -->
 
     <div id="particles-js">
     </div>

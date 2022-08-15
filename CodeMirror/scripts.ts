@@ -75,7 +75,8 @@ let myTheme = EditorView.theme({
     },
     ".cm-tooltip": {
         fontSize: "14px",
-        fontFamily: 'Rubik Light, Open Sans'
+        fontFamily: 'Rubik Light, Open Sans',
+        opacity: ".75"
     }
 }, { dark: false })
 
@@ -337,7 +338,7 @@ async function fetchProblems(CUI) {
 
     lastAjaxCall.endpoint = 'PotentialComorbidities'
     lastAjaxCall.cui = CUI
-    var $assocConditions = $('#associated-conditions')
+    var $assocConditions = $('#Associated_Conditions')
     //   document.getElementById('preloader').style.display = 'inline-flex'
     //   document.getElementById('particles-js').style.display = 'none'
     $assocConditions.html('')
@@ -364,17 +365,17 @@ async function fetchProblems(CUI) {
                 }
                 var suggestion_str = ''
                 for (var i = 0; i <= response.data.length - 1; i++) {
-                    suggestion_str += "<div class='row suggestion' data-type='problem' data-cui='" + response.data[i].CUI + "' data-name='" + response.data[i].Problem + "'>"
-                    suggestion_str += "<h6 class='col-12 suggestion-text'>"
+                    suggestion_str += "<div class='suggestion' data-type='problem' data-cui='" + response.data[i].CUI + "' data-name='" + response.data[i].Problem + "'>"
+                    suggestion_str += "<span></span><span class='suggestion-text'>"
                     suggestion_str += response.data[i].Problem
-                    suggestion_str += "</h6>"
+                    suggestion_str += "</span><span></span>"
                     // suggestion_str += "<span class='col-2'></span>"
                     suggestion_str += "</div>"
                 }
                 $assocConditions.append(suggestion_str)
             }
-            $('#fa-Associated_Conditions').removeClass('active')
-            updateContent($('#fa-Associated_Conditions'), 'click')
+            $('#tab-Associated_Conditions').removeClass('active')
+            updateContent($('#tab-Associated_Conditions'), 'click')
         }).catch(function (error) {
 
             $('#preloader').css('display', 'none');
@@ -393,7 +394,7 @@ async function fetchProblems(CUI) {
 
 // Fetch order results from the API
 async function fetchOrders(CUI) {
-    var $assocOrders = $('#associated-orders')
+    var $assocOrders = $('#Associated_Orders')
     $assocOrders.html('')
 
     var bodyUI = {
@@ -435,17 +436,33 @@ async function fetchOrders(CUI) {
                 }
                 var suggestion_str = ''
                 for (var i = 0; i <= response.data.length - 1; i++) {
-                    suggestion_str += "<div class='row suggestion' data-type='order' data-problem-cui='" + CUI + "' data-cui='" + response.data[i].Code + "' data-name='" + response.data[i].Order + "' parent-problem='" + parent_problem + "' >"
-                    suggestion_str += "<span class='col-2'></span><h6 class='col-8 suggestion-text'>"
+                    var faIcon, iconTitle
+                    switch (response.data[i].Type) {
+                        case 'Lab':
+                            faIcon = "fa-flask";
+                            iconTitle = "Lab Test";
+                            break;
+                        case 'Prescription':
+                            faIcon = "fa-pills";
+                            iconTitle = "Prescription";
+                            break;
+                        case 'Procedure':
+                            faIcon = "fa-hospital-user";  //heart-pulse
+                            iconTitle = "Procedure";
+                            break;
+                    }
+                    suggestion_str += "<div class='suggestion' data-type='order' data-problem-cui='" + CUI + "' data-cui='" + response.data[i].Code + "' data-name='" + response.data[i].Order + "' parent-problem='" + parent_problem + "' >"
+                    suggestion_str += "<span></span><span class='suggestion-text'>"
                     suggestion_str += response.data[i].Order
-                    suggestion_str += "</h6>"
-                    suggestion_str += "<span class='tag col-2'>" + response.data[i].Type + "</span>"
+                    suggestion_str += "</span>"
+                    // suggestion_str += "<span class='tag col-2'>" + response.data[i].Type + "</span>"
+                    suggestion_str += "<span class='order-type fas " + faIcon + "' title='" + iconTitle + "'> </span>"
                     suggestion_str += "</div>"
                 }
                 $assocOrders.append(suggestion_str)
             }
-            $('#fa-Associated_Orders').removeClass('active')
-            updateContent($('#fa-Associated_Orders'), 'click')
+            $('#tab-Associated_Orders').removeClass('active')
+            updateContent($('#tab-Associated_Orders'), 'click')
 
         }).catch(function (error) {
 
@@ -564,7 +581,7 @@ function getCursorTooltips(state: EditorState) {
             }
 
             if (line.number == 1 && state.doc.line(line.number).text == '') {
-                $('#associated-conditions').html('')
+                $('#Associated_Conditions').html('')
                 // $("#problem_tab").style.display = "none"
                 // $("#particles-js").style.display = "block"
                 lastFetchedCUI = ''
@@ -627,19 +644,19 @@ $(function (e) {
         view.focus()
     })
 
-    $('#dashboard span').on('mouseenter', function (e) {
+    $('.tab-collection .tab').on('mouseenter', function (e) {
         updateContent(this, 'mouseenter')
     })
 
-    $('#dashboard span').on('mouseleave', function (e) {
+    $('.tab-collection .tab').on('mouseleave', function (e) {
         updateContent(this, 'mouseleave')
     });
 
-    $('#dashboard span').on('click', function (e) {
+    $('.tab-collection .tab').on('click', function (e) {
         updateContent(this, 'click')
     });
 
-    updateContent($('#fa-Associated_Conditions'), 'click')
+    updateContent($('#tab-Associated_Conditions'), 'click')
 })
 
 // This function handles the behavior of clicking an order
@@ -647,30 +664,31 @@ $(function (e) {
 
 function bindOrderSuggestions() {
 
-    let all_suggestions = document.getElementsByClassName('suggestion')
+    let all_suggestions = document.getElementsByClassName('suggestion-text')
     let index1 = arrCUIs.findIndex(e => e.name.toString().toLowerCase().replace(/\s/g, '').replace('\t', '') === currentRowText.toLowerCase().replace(/\s/g, ''))
     for (var i = 0; i <= all_suggestions.length - 1; i++) {
 
         var elem = all_suggestions[i]
         elem.addEventListener('click', function (e) {
+            var suggestion = $(this).parent('.suggestion')
             dataJson[0].Problems.filter(i => {
-                if (i.ProblemText == this.getAttribute('parent-problem')) {
+                if (i.ProblemText == suggestion.attr('parent-problem')) {
                     i.Orders.push({
-                        "OrderCUI": this.getAttribute('data-cui'),
-                        "OrderText": this.getAttribute('data-name'),
+                        "OrderCUI": suggestion.attr('data-cui'),
+                        "OrderText": suggestion.attr('data-name'),
                     })
                 }
             })
             arrCUIs.push({
-                type: this.getAttribute('data-type'),
-                ordercui: this.getAttribute('data-cui'),
-                name: this.getAttribute('data-name'),
-                problemCui: this.getAttribute('data-problem-cui')
+                type: suggestion.attr('data-type'),
+                ordercui: suggestion.attr('data-cui'),
+                name: suggestion.attr('data-name'),
+                problemCui: suggestion.attr('data-problem-cui')
             })
             var content = ''
             if (currentRowText.length == 0 || currentRowText.trim().length == 0) {
                 content += '\t'
-                content += this.getAttribute('data-name')
+                content += suggestion.attr('data-name')
                 content += '\n'
                 view.dispatch(
                     view.state.update({
@@ -690,7 +708,7 @@ function bindOrderSuggestions() {
             }
             else if (currentRowText.startsWith('\t') && index1 === -1) {
                 content += '\t'
-                content += this.getAttribute('data-name')
+                content += suggestion.attr('data-name')
                 view.dispatch({
                     changes: { from: currentLineFrom, to: currentLineTo, insert: content }
                 })
@@ -715,12 +733,12 @@ function bindOrderSuggestions() {
                 let final_line = current_state.doc.line(get_line_before_problem);
                 content += '\n'
                 content += '\t'
-                content += this.getAttribute('data-name')
+                content += suggestion.getAttribute('data-name')
                 view.dispatch({
                     changes: { from: final_line.to, insert: content }
                 })
             }
-            $('#associated-orders').html()
+            $('#Associated_Orders').html()
 
             view.focus()
 
@@ -893,14 +911,14 @@ function updateContent(obj, action) {
     if (!$(this).hasClass('active')) {
         switch (action) {
             case 'mouseenter':
-                btnName = $(obj).attr('id').replace('fa-', '')
+                btnName = $(obj).attr('id').replace('tab-', '')
                 break;
             case 'mouseleave':
-                btnName = $('#dashboard span.active').attr('id').replace('fa-', '')
+                btnName = $('#clinical-context span.active').attr('id').replace('tab-', '')
                 break;
             case 'click':
-                btnName = $(obj).attr('id').replace('fa-', '')
-                $('#dashboard span').removeClass('active');
+                btnName = $(obj).attr('id').replace('tab-', '')
+                $('#clinical-context span').removeClass('active');
                 $(obj).addClass('active');
                 break;
         }
