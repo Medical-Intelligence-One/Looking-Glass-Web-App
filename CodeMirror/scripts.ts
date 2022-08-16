@@ -77,6 +77,7 @@ let myTheme = EditorView.theme({
         fontSize: "14px",
         fontFamily: 'Rubik Light, Open Sans',
         opacity: ".75"
+        // display: "none"
     }
 }, { dark: false })
 
@@ -690,25 +691,25 @@ function bindOrderSuggestions() {
                 content += '\t'
                 content += suggestion.attr('data-name')
                 content += '\n'
-                view.dispatch(
-                    view.state.update({
-                        changes: { from: currentLineFrom, to: currentLineTo, insert: content }
-                    })
-                )
-                currentPosition = currentLineFrom + content.length
-                let setCursor = EditorSelection.cursor(currentPosition)
-                view.focus()
-                view.dispatch(
-                    view.state.update({
-                        // selection: new EditorSelection([EditorSelection.cursor(currentPosition)], 0)
-                        selection: setCursor
-                    })
-                )
-
+                // view.dispatch(
+                //     view.state.update({
+                //         changes: { from: currentLineFrom, to: currentLineTo, insert: content }
+                //     })
+                // )
+                // currentPosition = currentLineFrom + content.length
+                // let setCursor = EditorSelection.cursor(currentPosition)
+                // view.focus()
+                // view.dispatch(
+                //     view.state.update({
+                //         selection: setCursor
+                //     })
+                // )
+                insertText(currentLineFrom, currentLineTo, content)
             }
             else if (currentRowText.startsWith('\t') && index1 === -1) {
                 content += '\t'
                 content += suggestion.attr('data-name')
+                // insertText (currentLineFrom, currentLineTo, content)
                 view.dispatch({
                     changes: { from: currentLineFrom, to: currentLineTo, insert: content }
                 })
@@ -747,7 +748,24 @@ function bindOrderSuggestions() {
     }
 }
 
+//insert text in codemirror editor at specified point
+function insertText(lineFrom, lineTo, content) {
+    view.dispatch(
+        view.state.update({
+            changes: { from: lineFrom, to: lineTo, insert: content }
+        })
+    )
+    currentPosition = currentLineFrom + content.length
+    let setCursor = EditorSelection.cursor(currentPosition)
+    view.focus()
+    view.dispatch(
+        view.state.update({
+            selection: setCursor
+        })
+    )
+    view.focus()
 
+}
 
 // This function handles the behavior of clicking a problem
 // from the sidebar
@@ -868,6 +886,8 @@ getReadButton.addEventListener('click', function (e) {
 
     })
 })
+
+insertText(currentLineFrom, currentLineTo, "Assessment and Plan\n")
 
 
 // This function checks if the document contains problems or orders
