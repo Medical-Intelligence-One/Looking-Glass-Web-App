@@ -1,20 +1,19 @@
 {
-  "name": "CodeMirror",
+  "name": "codemirror",
   "version": "1.0.0",
-  "description": "",
-  "homepage": ".",
-  "source": ["index.html"],
+  "homepage": "http://.",
+  "source": "index.html",
   "scripts": {
-    "build": "parcel build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel"
+    "start": "parcel --no-cache",
+    "build": "parcel build --no-cache"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "parcel-bundler": "^1.12.5",
-    "typescript": "^4.5.5"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^0.19.13",
@@ -35,4 +34,8 @@
     "particles.js": "^2.0.0",
     "particlesjs": "^2.2.3"
   },
+  "directories": {
+    "lib": "lib"
+  },
+  "description": ""
 }
