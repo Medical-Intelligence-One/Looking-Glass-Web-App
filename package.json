@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "homepage": ".",
-  "main": "index.js",
+  "source": ["index.js"],
   "scripts": {
+    "build": "parcel build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel index.html"
+    "start": "parcel"
   },
   "keywords": [],
   "author": "",
