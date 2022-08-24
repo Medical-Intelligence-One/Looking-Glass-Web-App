@@ -19,7 +19,20 @@
   "dependencies": {
     "@codemirror/autocomplete": "^0.19.13",
     "@codemirror/basic-setup": "^0.19.1",
+    "@codemirror/commands": "^0.19.1",
+    "@codemirror/language": "^0.19.1",
+    "@codemirror/state": "^0.19.1",
+    "@codemirror/tooltip": "^0.19.1",
+    "@codemirror/view": "^0.19.1",
+    "@types/jquery": "^3.5.14",
     "axios": "^0.26.0",
-    "particles.js": "^2.0.0"
-  }
+    "core-js": "^3.23.4",
+    "cors": "^2.8.5",
+    "cross-fetch": "^3.1.5",
+    "edit-json-file": "^1.7.0",
+    "node-fetch": "^3.2.10",
+    "parcel": "^2.6.2",
+    "particles.js": "^2.0.0",
+    "particlesjs": "^2.2.3"
+  },
 }
