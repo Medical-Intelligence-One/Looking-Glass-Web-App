@@ -1,4 +1,4 @@
-/CodeMirror/.cache
-/CodeMirror/.parcel-cache
-/CodeMirror/dist
-/CodeMirror/node_modules
+/.cache
+/.parcel-cache
+/dist
+/node_modules
