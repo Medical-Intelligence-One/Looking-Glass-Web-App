@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "homepage": ".",
-  "source": ["index.js"],
+  "source": ["index.html"],
   "scripts": {
     "build": "parcel build",
     "test": "echo \"Error: no test specified\" && exit 1",
