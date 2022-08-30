@@ -33,6 +33,13 @@
     "particles.js": "^2.0.0",
     "particlesjs": "^2.2.3"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medical-Intelligence-One/Looking-Glass-Web-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Medical-Intelligence-One/Looking-Glass-Web-App.git/issues"
+  },
   "directories": {
     "lib": "lib"
   },
