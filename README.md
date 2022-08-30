@@ -31,4 +31,4 @@ node -v
 ### To run the Looking-Glass-Web-App:
 
 npm install parcel
-npm start # or run live-server
+npm start # or run live-server.
