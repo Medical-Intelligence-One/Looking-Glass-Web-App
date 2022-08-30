@@ -2,8 +2,12 @@
   "name": "codemirror",
   "version": "1.0.0",
   "homepage": "http://.",
-  "source": "index.html",
+  "source": [
+    "index.html",
+    "launch.html"
+  ],
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel --no-cache",
     "build": "parcel build --no-cache"
   },
@@ -32,6 +36,13 @@
     "parcel": "^2.6.2",
     "particles.js": "^2.0.0",
     "particlesjs": "^2.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harsh2306/MI1HP3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/harsh2306/MI1HP3.git/issues"
   },
   "directories": {
     "lib": "lib"

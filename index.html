@@ -4,229 +4,394 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assessment and Plan</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Medical Intelligence One</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="stylesheet" type="text/css" href="swoop.css">
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel='stylesheet' type='text/css' href='./src/css/example-smart-app.css'>
 </head>
 
 <body>
     <style>
+        .tab {
+            overflow: hidden;
+            border: 1px solid #334c4d;
+            border-radius: 5px;
+            /* border: 1px solid rgb(0, 0, 0); */
+            background-color: #43a4a8;
+        }
+
+        .tab button ::before {
+            border: 0.5px solid;
+        }
+
+        /* Style the buttons inside the tab */
+
+        .tab button {
+            background-color: inherit;
+            width: 100%;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        /* Change background color of buttons on hover */
+
+        .tab button:hover {
+            background-color: #325b94;
+        }
+
+        /* Create an active/current tablink class */
+
+        .tab button.active {
+            background-color: #2d5286;
+            color: white;
+        }
+
+        #parentFhir {
+            padding: 10px;
+            max-width: 1440px;
+            margin-top: 10px;
+            width: calc(100% - 80px);
+            background-color: #a8dadc;
+            border-radius: 7px;
+        }
+
+        /* Style the tab content */
+
+        .tabcontent {
+            min-height: 600px;
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
         /* Style particle js */
-        /* #particles-js{ height: 600px; width: 100%;background-color: red; } */
+
+        #particles-js {
+            height: 600px;
+            width: 100%;
+            background-color: red;
+        }
     </style>
-    <header class="d-flex sticky-top">
-        <span id="logo" class="">
-            <a href="https://www.mi1.ai/">
-                <img src="./assets/Original on Transparent.png" height="60px"
-                    alt="Medical Intelligence One home page" />
-            </a>
-        </span>
-        <span id="parentFhir" class="">
-            <table id="fhir" class="h4">
-                <tr class="text-end">
-                    <td colspan="2" id="patient-name"></td>
-                </tr>
-                <tr class="">
-                    <td>MRN</td>
-                    <td id="patient-mrn" class=""></td>
-                </tr>
-                <tr class="">
-                    <td>DOB</td>
-                    <td id="patient-dob" class=""></td>
-                </tr>
-                <!-- <button id="jsondata">Get Json Data</button> -->
-            </table>
-        </span>
-    </header>
-    <!-- <div> -->
-    <div class="col-12 page-title h2">Clinical Co-pilot Prototype</div>
-    <!-- Cubic Bézier curve with lines added to enclose a fillable space -->
-    <!-- <div id="curve">
-            <svg id="logistic-curve" width="100%" viewBox="0 0 350 35">
-                <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%" x3="0%" y3="0%">
-                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:grey;stop-opacity:1" />
-                        <stop offset="0%" style="stop-color:white;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <path fill="url(#grad1)" d="
-
-                                                                                        M 0,35 
-                                                                                        c 100,0 10,-35 150,-35 
-                                                                                        l 250,0 0,35" />
-            </svg>
-
-        </div> -->
-    <!-- <div class="row">
-            <div class="col-8 text-start">
-                <div class="page-title h3 section-header">Assessment and Plan</div>
-            </div>
-            <div class="col-4">
-                <div id="dashboard">
-                    <span class="tab red" id="fa-Associated_Conditions">Associated Conditions</span>
-                    <span class="tab orange" id="fa-Alternative_Orders">Alternative Orders</span>
-                    <span class="tab yellow" id="fa-Alternative_Diagnosis">Alternative Diagnoses</span>
-                    <span class="tab green" id="fa-Experts">Experts</span>
-                    <span class="tab blue" id="fa-Associated_Orders">Associated Orders</span>
-                    <span class="tab indigo" id="fa-Order_Editor">Order Editor</span>
-                </div>
-            </div>
-        </div> -->
-    <div class="row">
-        <div id="clinical-notes" class="col-8 text-start ms-1">
-            <div class="tab-collection ">
-                <span class="tab active">Assessment and Plan</span>
-            </div>
-            <!-- <div class="page-title h3 section-header">Assessment and Plan</div> -->
-            <div class="code-mirror-app">
-                <div class="code-mirror-wrapper">
-                    <!-- <div id="editor-container" class="editor-container"> -->
-                    <div class="editor editor-container" id="editor"></div>
-                    <!-- </div> -->
-                </div>
-            </div>
-            <div class="clinical-buttons">
-                <button type="button" class="btn btn-primary ms-2 me-2" id="clinicalCreate">Send
-                    Clinical
-                    Note</button>
-                <button type="button" class="btn btn-primary" id="clinicalRead">Read
-                    Clinical
-                    Note</button>
-            </div>
+    <div id="parentFhir" class="container">
+        <div>
+            <h4>Patient ID: </h4>
+            <h4 id="PatientId">PatientId</h4>
+            <h4 id="ParctitionerId" style="display: None;">ParctitionerId</h4>
+            <h4 id="EncounterRef" style="display: None;">EncounterRef</h4>
+            <h4 id="smartObjectValue" style="display: None;">NotUpdated</h4>
         </div>
-        <!-- <div class="col-4 position-fixed end-0"> -->
-        <div class="col">
-            <!-- Tabs section for problems-->
-            <!-- <div id="problem_tab" class="tab section-header" style="display:none">
-                    <div class="d-flex">
-                        <button class="tablinks far-left" onclick="openTab(event, 'Experts')">Experts</button>
-                        <button class="tablinks" onclick="openTab(event, 'Associated_Conditions')"
-                            id="defaultOpen">Associated Conditions</button>
-                        <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Diagnosis')">Alternative
-                            Diagnosis</button>
-                    </div>
-                </div> -->
-
-            <!-- Tab section for orders-->
-            <!-- <div id="orders_tab" class="tab section-header" style="display:none">
-                    <div class="d-flex">
-                        <button id="defaultOpenForOrders" class="tablinks far-left"
-                            onclick="openTab(event, 'Associated_Orders')">Associated Orders</button>
-                        <button class="tablinks" onclick="openTab(event, 'Order_Editor')">Order Editor</button>
-                        <button class="tablinks far-right" onclick="openTab(event, 'Alternative_Orders')">Alternative
-                            Orders</button>
-                    </div>
-                </div> -->
-
-            <!-- Our Suggestions comes over here -->
-            <!-- <i class="fas fa-user-doctor"></i>
-                                            <i class="fas fa-bacteria"></i>
-                                            <i class="fas fa-briefcase-medical"></i>
-                                            <i class="fas fa-comment-medical"></i>
-                                            <i class="fas fa-dna"></i>
-                                            <i class="fas fa-flask"></i> 
-                                            <i class="fas fa-hand-holding-medical"></i>
-                                            <i class="fas fa-handshake-simple"></i>
-                                            <i class="fas fa-pills"></i>
-                                            <i class="fas fa-puzzle-piece"></i>
-                                            <i class="fas fa-suitcase-medical"></i>
-                                            <i class="fas fa-vial"></i> -->
-
-            <!-- <i class="fab fa-connectdevelop active" id="fa-Associated_Conditions"></i>
-                                            <i class="fas fa-book-medical" id="fa-Alternative_Orders"></i>
-                                            <i class="fas fa-cubes" id="fa-Alternative_Diagnosis"></i>
-                                            <i class="fas fa-handshake-simple" id="fa-Experts"></i>
-                                            <i class="fas fa-network-wired" id="fa-Associated_Orders"></i>
-                                            <i class="fas fa-pencil" id="fa-Order_Editor"></i> -->
-
-            <div id="clinical-context" class="tab-collection">
-                <span class="tab" id="tab-Associated_Conditions">Associated Conditions</span>
-                <span class="tab" id="tab-Alternative_Orders">Alternative Orders</span>
-                <span class="tab" id="tab-Alternative_Diagnosis">Alternative Diagnoses</span>
-                <span class="tab" id="tab-Experts">Experts</span>
-                <span class="tab" id="tab-Associated_Orders">Associated Orders</span>
-                <span class="tab" id="tab-Order_Editor">Order Editor</span>
-            </div>
-            <div id="suggestions" class="suggestions-container suggestions">
-                <div id="content-title" class="page-title h4 section-header"></div>
-                <div id="preloader" class="preloader" style="display: none;"><img src="assets/preloader.gif" />
-                </div>
-                <!-- Content for Problems -->
-                <div id="Experts" class="tabcontent">
-                    <!-- <h4>Experts</h4> -->
-                </div>
-
-                <div id="Associated_Conditions" class="tabcontent">
-                    <!-- <h4>Associated Conditions</h4> -->
-                    <!-- <div id="associated-conditions">
-                    </div> -->
-                </div>
-
-                <div id="Alternative_Diagnosis" class="tabcontent">
-                    <!-- <h4>Alternative Diagnosis</h4> -->
-                </div>
-
-                <!-- Content for Orders -->
-                <div id="Associated_Orders" class="tabcontent">
-                    <!-- <h4>Associated Orders</h4> -->
-                    <!-- <div id="associated-orders">
-                    </div> -->
-                </div>
-
-                <div id="Order_Editor" class="tabcontent">
-                    <!-- <h4>Order Editor</h4> -->
-                </div>
-
-                <div id="Alternative_Orders" class="tabcontent">
-                    <!-- <h4>Alternative Orders</h4> -->
-                </div>
-
-            </div>
+        <div id="fhir">
+            <h4>Patient Name:</h4>
+            <h4>Medical Record Number (MRN):</h4>
+            <h4>Date Of Birth: </h4>
+            <!-- <h4>Patient Id: </h4>
+            <h4>Encounter Reference: </h4> -->
+        </div>
+        <div id="loading" class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
         </div>
     </div>
-    <!-- </div> -->
+    <div class="code-mirror-app">
 
-    <div id="particles-js">
+        <div class="code-mirror-wrapper">
+
+            <div id="editor-container" class="editor-container">
+                <h3>Assessment and Plan</h3>
+                <div class="editor" id="editor"></div>
+                <button id="clinicalCreate" style="margin-top:10px">Send Clinical Note</button>
+                <button id="clinicalRead" style="margin-top:10px">Read Clinical Note</button>
+            </div>
+
+            <div class="suggestions-container">
+
+                <div id="suggestions" class="suggestions">
+
+                    <!-- Tabs Sections for problems-->
+                    <div style="display: none" id="problem_tab" class="tab">
+                        <div class="container-flex">
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button style="height: 100%;" class="tablinks"
+                                        onclick="tabMgmt(event, 'tabExperts')">Experts</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button class="tablinks" onclick="tabMgmt(event, 'Associated_Conditions')"
+                                        id="defaultOpen">Associated Conditions</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabAltDiagnosis')">Alternative
+                                        Diagnosis</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab content for orders-->
+                    <div style="display: none;" id="orders_tab" class="tab">
+                        <div class="container-flex">
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button class="tablinks" onclick="tabMgmt(event, 'Associated_Conditions')"
+                                        id="defaultOpenForOrders">Associated Orders</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabOrderEditor')">Order
+                                        Editor</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button class="tablinks" onclick="tabMgmt(event, 'tabAltOrders')">Alternative
+                                        Orders</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tabExperts" class="tabcontent">
+                        <h3>Experts</h3>
+                        <p>experts data</p>
+                    </div>
+
+                    <div id="tabAltDiagnosis" class="tabcontent">
+                        <h3>Alternative Diagnosis</h3>
+                        <p>Alternative Diagnosis data</p>
+                    </div>
+
+                    <div id="tabAltOrders" class="tabcontent">
+                        <h3>Alternative Orders</h3>
+                        <p>Alternative Orders data</p>
+                    </div>
+                    <div id="tabOrderEditor" class="tabcontent">
+                        <h3>Order Editor</h3>
+                        <p>Order Editor data</p>
+                    </div>
+
+                    <div id="Associated_Conditions" class="tabcontent">
+
+                        <!-- Particle js integration -->
+                        <div id="particles-js"></div>
+
+                        <!-- Our Suggestions comes over here -->
+                        <div id="preloader" class="preloader" style="display: none;"><img src="assets/preloader.gif" />
+                        </div>
+
+                        <div id="suggestions-content">
+                        </div>
+
+                        <!-- <div id="preloader" class="preloader" style="display: none;"><img src="assets/preloader.gif" /></div>
+
+          <div id="suggestions-content"> -->
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
     </div>
+    </div>
+    
     <script>
-        $(function () {
-            $('#patient-mrn').text('ABC12345')
-            $('#patient-dob').text('12-06-2015')
-            $('#patient-name').text('Bernie Timothy Clifton')
 
-        });
-
-        function openTab(evt, tabName) {
-
-            $('.tabcontent').css('display', 'none');
-            $('.tablinks').removeClass('active');
-            $('#' + tabName).css('display', 'block');
-            $(evt.currentTarget).addClass('active');
-
+        function tabMgmt(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
         }
 
         // Get the element with id="defaultOpen" and click on it
-        $("#defaultOpen").click();
+        document.getElementById("defaultOpen").click();
+    </script>
+    
+    <script>
+        (function (window) {
+
+            window.extractData = function () {
+                var ret = $.Deferred();
+                console.log("Inside window extractData")
+
+                function onError() {
+                    console.log('Loading error', arguments);
+                    ret.reject();
+                }
+
+                function onReady(smart) {
+                    if (smart.hasOwnProperty('patient')) {
+
+                        console.log("Smart Patient")
+                        var patient = smart.patient;
+                        // console.log(patient);
+                        console.log("Smart Object", smart);
+                        var parctitionerId = smart.userId;
+                        var patientID = patient.id;
+                        var encounterID = smart.tokenResponse.encounter;
+
+                        // console.log(patient.id,smart.userId,smart.tokenResponse.encounter);
+                        console.log(patientID,parctitionerId,encounterID)
+
+                        // localStorage.setItem('encounterRef', encounterID);
+                        // localStorage.setItem('fhirpatientid', patientID);
+                        // localStorage.setItem('parctitionerId', parctitionerId);
+                        document.getElementById("smartObjectValue").innerHTML = 'Updated';
+                        
+
+
+                        document.getElementById("PatientId").innerHTML = patientID;
+                        document.getElementById("ParctitionerId").innerHTML = parctitionerId
+                        document.getElementById("EncounterRef").innerHTML = encounterID;
+
+
+                        //PatientData
+                        var url = 'http://127.0.0.1:5000/PatientData';
+                        var apiUrl_azure = "https://mi1api.azurewebsites.net/PatientData";
+                        var data = {
+                            PatientId: patientID,
+                            MI1ClientID: localStorage.getItem('MI1ClientId')
+                        };
+                        console.log(JSON.stringify(data));
+                        fetch(apiUrl_azure, {
+                        method: 'POST', // or 'PUT'
+                        body: JSON.stringify(data), // data can be `string` or {object}!
+                        
+                        headers:{
+                            'Content-Type': 'application/json'
+                        }
+                        }).then(res => res.json())
+                        .then(response => 
+                        {
+                                    console.log(response);
+                                    console.log(typeof(response));
+                                    console.log(response.DOB);
+                                if (response.data != []) {
+                                    
+                                if (response.DOB && response.MRN && response.Name) {
+                                    console.log(response);
+                                    console.log(typeof(response));
+                                    
+                                    let dob = response.DOB;
+                                    let mrn = response.MRN;
+                                    let name = response.Name;
+                                    
+
+                                    let fhirHTMl = document.getElementById("fhir");
+                                    var fhirHTMl_div = "";
+                                    fhirHTMl_div += '<div class="fhir-header"><h4>';
+                                    fhirHTMl_div += "Patient Name : " + name + "</h4>";
+                                    fhirHTMl_div += "<h4> Medical Record Number (MRN): " + mrn + "</h4>";
+                                    fhirHTMl_div += "<h4> Date Of Birth : " + dob + "</h4>";
+                                    fhirHTMl.innerHTML = fhirHTMl_div;
+                                } else {
+                                    let ErrorMessage = response.ErrorMessage;
+                                    let StatusCode = response.StatusCode;
+                                    let ErrorDescription = response.ErrorDescription;
+                                    alert(
+                                    "ErrorMessage: " +
+                                        ErrorMessage +
+                                        "\nStatusCode: " +
+                                        StatusCode +
+                                        "\nErrorDescription: " +
+                                        ErrorDescription
+                                    );
+                                }
+                                } else {
+                                let ErrorMessage = response.ErrorMessage;
+                                let StatusCode = response.StatusCode;
+                                let ErrorDescription = response.ErrorDescription;
+                                alert(
+                                    "ErrorMessage: " +
+                                    ErrorMessage +
+                                    "\nStatusCode: " +
+                                    StatusCode +
+                                    "\nErrorDescription: " +
+                                    ErrorDescription
+                                );
+                                }
+                            }
+                        )
+                        .catch(error => console.error('Error:', error));
+
+
+                        $('#loading').hide();
+                        var pt = patient.read();
+
+                        // for (var key in localStorage) {
+                        //     console.log(key, localStorage.getItem(key))
+                        // }
+
+                    } else {
+                        onError();
+                    }
+
+                }
+                FHIR.oauth2.ready(onReady, onError);
+
+                return ret.promise();
+            }
+
+        })(window);
+    </script>
+
+    <!-- Their js files -->
+
+    <script src='./lib/js/fhir-client-v0.1.12.js'></script>
+    <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+
+        extractData().then(
+
+            //Display Patient Demographics and Observations if extractData was success
+            function (p) {
+                console.log("Inside extractData.then()")
+                // drawVisualization(p);
+            },
+
+            //Display 'Failed to call FHIR Service' if extractData failed
+            function () {
+                $('#loading').hide();
+                $('#errors').html('<h3> Failed to call FHIR Service </h3>');
+            }
+        );
     </script>
 
 
-    <script src="scripts.ts" type="module"></script>
+
+    <!-- Out typescript file -->
+    <script type="module" src="scripts.ts"></script>
 
     <!-- Import Particles.js and app.js files -->
-    <script src="/node_modules/particles.js/particles.js"></script>
+    <script src="node_modules\particles.js\particles.js"></script>
+    <script src="node_modules\particles.js\demo\js\app.js"></script>
+    <!--   
+  <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script  src="./script.js"></script> -->
+
+    <!-- <script src='https://cldup.com/S6Ptkwu_qA.js'></script><script  src="./script.js"></script> -->
 </body>
 
 </html>
