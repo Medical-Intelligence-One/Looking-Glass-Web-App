@@ -180,7 +180,11 @@ header {
 } */
 
 #clinical-notes {
-    margin: 0 1em;
+    margin-left: 1em;
+}
+
+#clinical-context {
+    max-width: 550px;
 }
 
 .cm-editor {
